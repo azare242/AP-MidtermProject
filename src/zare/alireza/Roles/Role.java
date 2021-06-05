@@ -1,6 +1,8 @@
 package zare.alireza.Roles;
 
-public interface Role {
+import java.io.Serializable;
+
+public interface Role extends Serializable {
     public void action();
     public void printInformation();
 }
