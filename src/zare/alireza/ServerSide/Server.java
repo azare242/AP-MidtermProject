@@ -9,8 +9,9 @@ import java.util.*;
 public class Server {
     private ServerSocket serverSocket;
     private ArrayList<Role> rolesForGiveToPlayers;
-    private HashMap<String, Role> rolesForGame;
+    private HashMap<String, PlayerThread> rolesForGame;
     private ArrayList<String> userNames;
+    private ArrayList<PlayerThread> threads;
     public Server(int port){
         try {
             serverSocket = new ServerSocket(port);
@@ -20,6 +21,7 @@ public class Server {
         rolesForGiveToPlayers = RolesList.get();
         rolesForGame = new HashMap<>();
         userNames = new ArrayList<>();
+        threads = new ArrayList<>();
     }
     private boolean userNameIsValid(String userName){
         for (String un : userNames){
@@ -44,6 +46,23 @@ public class Server {
             }
         }
     }
+    private Role giveRoleToPlayer(){
+        Role role = rolesForGiveToPlayers.get(0);
+        rolesForGiveToPlayers.remove(0);
+        return role;
+    }
+    private void mapRoleToPlayerThread(Role role,PlayerThread pt){
+        rolesForGame.put(role.getClass().getSimpleName(),pt);
+    }
+
+    private void sendRoleToClient(Role role , OutputStream outputStream){
+        try {
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+            objectOutputStream.writeObject(role);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     public void serverStart(){
 
         int clientsConnectedCounter = 1;
@@ -52,7 +71,11 @@ public class Server {
                 Socket socket = serverSocket.accept();
                 String newUserName = getUserNameFromClient(socket.getInputStream(),socket.getOutputStream());
                 userNames.add(newUserName);
-
+                Role role = giveRoleToPlayer();
+                PlayerThread playerThread = new PlayerThread(socket,role);
+                mapRoleToPlayerThread(role,playerThread);
+                threads.add(playerThread);
+                sendRoleToClient(role,socket.getOutputStream());
                 //TODO:ClientThreads Start
                 clientsConnectedCounter++;
             } catch (IOException e) {

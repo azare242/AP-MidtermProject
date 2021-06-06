@@ -1,5 +1,7 @@
 package zare.alireza.ClientSide;
 
+import zare.alireza.Roles.Role;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -38,7 +40,7 @@ public class ClientProgram {
         while (true) {
             System.out.println("Enter Game Port: ");
             port = scanner.next();
-            boolean portIsValid = port.length() == 4 && !Character.isAlphabetic(port.charAt(0));
+            boolean portIsValid = portIsValid(port);
             if (portIsValid){
                 break;
             }
@@ -93,8 +95,13 @@ public class ClientProgram {
                 }
                 else System.out.println("SERVER: " + massageFromServer);
             }
-
-
+            ObjectInputStream objectInputStream = new ObjectInputStream(socketInputStream);
+            try {
+                Role role = (Role) objectInputStream.readObject();
+                role.printInformation();
+            } catch (ClassNotFoundException e) {
+                System.out.println("EXCEPTION CAUGHT: " + e.getMessage());
+            }
         } catch (IOException e) {
             System.out.println("EXCEPTION CAUGHT: " + e.getMessage());
         }
