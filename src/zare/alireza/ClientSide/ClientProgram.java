@@ -99,11 +99,27 @@ public class ClientProgram {
             try {
                 Role role = (Role) objectInputStream.readObject();
                 role.printInformation();
+                ready(dataOutputStream);
             } catch (ClassNotFoundException e) {
                 System.out.println("EXCEPTION CAUGHT: " + e.getMessage());
             }
         } catch (IOException e) {
             System.out.println("EXCEPTION CAUGHT: " + e.getMessage());
+        }
+
+    }
+    private void ready(DataOutputStream dataOutputStream){
+        System.out.println("ARE YOU READY?(when you reade ENTER 1): ");
+        String x;
+        while (true){
+            x = scanner.next();
+            if (x.equals("1")) break;
+            else System.out.println("Invalid input ,try again");
+        }
+        try {
+            dataOutputStream.writeUTF(x);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

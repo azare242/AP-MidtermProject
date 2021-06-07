@@ -1,6 +1,7 @@
 package zare.alireza.ServerSide;
 
 import zare.alireza.Roles.*;
+import zare.alireza.ServerSide.PlayerThreads.PlayerOnServer;
 
 import java.io.*;
 import java.net.*;
@@ -9,9 +10,9 @@ import java.util.*;
 public class Server {
     private ServerSocket serverSocket;
     private ArrayList<Role> rolesForGiveToPlayers;
-    private HashMap<String, PlayerThread> rolesForGame;
+    private HashMap<String, PlayerOnServer> rolesForGame;
     private ArrayList<String> userNames;
-    private ArrayList<PlayerThread> threads;
+    private ArrayList<PlayerOnServer> threads;
     public Server(int port){
         try {
             serverSocket = new ServerSocket(port);
@@ -51,7 +52,7 @@ public class Server {
         rolesForGiveToPlayers.remove(0);
         return role;
     }
-    private void mapRoleToPlayerThread(Role role,PlayerThread pt){
+    private void mapRoleToPlayerThread(Role role, PlayerOnServer pt){
         rolesForGame.put(role.getClass().getSimpleName(),pt);
     }
 
@@ -72,16 +73,18 @@ public class Server {
                 String newUserName = getUserNameFromClient(socket.getInputStream(),socket.getOutputStream());
                 userNames.add(newUserName);
                 Role role = giveRoleToPlayer();
-                PlayerThread playerThread = new PlayerThread(socket,role);
-                mapRoleToPlayerThread(role,playerThread);
-                threads.add(playerThread);
+                PlayerOnServer playerOnServer = new PlayerOnServer(socket,role,newUserName);
+                mapRoleToPlayerThread(role, playerOnServer);
+                threads.add(playerOnServer);
                 sendRoleToClient(role,socket.getOutputStream());
-                //TODO:ClientThreads Start
                 clientsConnectedCounter++;
             } catch (IOException e) {
                 System.out.println("EXCEPTION CAUGHT: " + e.getMessage());
             }
         }
-        //TODO: GAME START
+
+    }
+    private void getReady(){
+
     }
 }
