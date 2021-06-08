@@ -1,5 +1,7 @@
 package zare.alireza.ServerSide;
 
+import zare.alireza.GameLogic.ManageGame.GameManager;
+import zare.alireza.GameLogic.ManageGame.Game;
 import zare.alireza.Roles.*;
 import zare.alireza.ServerSide.PlayerThreads.PlayerOnServer;
 
@@ -30,9 +32,7 @@ public class Server {
         }
         return true;
     }
-    private String getUserNameFromClient(InputStream inputStream,OutputStream outputStream){
-        DataInputStream dataInputStream = new DataInputStream(inputStream);
-        DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
+    private synchronized String getUserNameFromClient(DataOutputStream dataOutputStream,DataInputStream dataInputStream){
         String userName;
         while (true){
             try {
@@ -56,7 +56,7 @@ public class Server {
         rolesForGame.put(role.getClass().getSimpleName(),pt);
     }
 
-    private void sendRoleToClient(Role role , OutputStream outputStream){
+    private void sendRoleInformationToClient(Role role,OutputStream outputStream){
         try {
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
             objectOutputStream.writeObject(role);
@@ -66,25 +66,51 @@ public class Server {
     }
     public void serverStart(){
 
-        int clientsConnectedCounter = 1;
-        while (clientsConnectedCounter <= 10){
+        int clientsConnectedCounter = 0;
+        while (clientsConnectedCounter != 4){
+
             try {
                 Socket socket = serverSocket.accept();
-                String newUserName = getUserNameFromClient(socket.getInputStream(),socket.getOutputStream());
+
+                System.out.println(clientsConnectedCounter);
+                DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+                DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
+                String newUserName = getUserNameFromClient(dataOutputStream,dataInputStream);
                 userNames.add(newUserName);
                 Role role = giveRoleToPlayer();
-                //PlayerOnServer playerOnServer = new PlayerOnServer(socket,role,newUserName);
-                //mapRoleToPlayerThread(role, playerOnServer);
-                //threads.add(playerOnServer);
-                sendRoleToClient(role,socket.getOutputStream());
-                clientsConnectedCounter++;
+                PlayerOnServer newClientThread = new PlayerOnServer(role,newUserName,this,dataInputStream,dataOutputStream);
+                mapRoleToPlayerThread(role,newClientThread);
+                sendRoleInformationToClient(role,socket.getOutputStream());
+                threads.add(newClientThread);
+                //newClientThread.start();
+
             } catch (IOException e) {
-                System.out.println("EXCEPTION CAUGHT: " + e.getMessage());
+                e.printStackTrace();
+            }
+
+            clientsConnectedCounter += 1;
+            if (clientsConnectedCounter == 3){
+                GameManager gameManager = new GameManager(this,new Game(rolesForGame,userNames,threads));
+                setGameManagerForThreads(gameManager);
+                gameManager.introNight();
             }
         }
 
-    }
-    private void getReady(){
 
+    }
+    private void setGameManagerForThreads(GameManager gameManager){
+        for (PlayerOnServer ps : threads) {
+            ps.setGameManager(gameManager);
+        }
+    }
+    private void startClientThreads(){
+        for (PlayerOnServer ps : threads) {
+            ps.start();
+        }
+    }
+    public void sendMassageToPlayers(String massage){
+        for (PlayerOnServer ps : threads){
+            ps.receiveMassage(massage);
+        }
     }
 }

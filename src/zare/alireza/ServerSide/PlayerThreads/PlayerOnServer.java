@@ -1,18 +1,16 @@
 package zare.alireza.ServerSide.PlayerThreads;
 
-import TEST.GameManager;
-import TEST.Server;
+import zare.alireza.GameLogic.ManageGame.GameManager;
+import zare.alireza.ServerSide.Server;
 import zare.alireza.Roles.*;
 
-import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.Socket;
+
 
 public  class PlayerOnServer extends Thread{
 
-    private Socket socket;
     private Role role;
     private String userName;
     private boolean isAlive = true;
@@ -20,18 +18,14 @@ public  class PlayerOnServer extends Thread{
     private DataOutputStream dataOutputStream;
     private GameManager gameManager;
     private Server server;
-    public PlayerOnServer(Socket socket, Role role, String userName,Server server) {
-        this.socket = socket;
+
+
+    public PlayerOnServer(Role role, String userName,Server server,DataInputStream dataInputStream,DataOutputStream dataOutputStream) {
         this.role = role;
         this.userName = userName;
         this.server = server;
-
-        try {
-            dataOutputStream = new DataOutputStream(this.socket.getOutputStream());
-            dataInputStream = new DataInputStream(this.socket.getInputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this.dataOutputStream = dataOutputStream;
+        this.dataInputStream = dataInputStream;
     }
 
     public void setGameManager(GameManager gameManager) {
@@ -50,7 +44,13 @@ public  class PlayerOnServer extends Thread{
 
     @Override
     public void run(){
-
+        try {
+            dataOutputStream.writeUTF("READY?");
+            dataOutputStream.writeUTF("READY?");
+            dataOutputStream.writeUTF("READY?");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     public void receiveMassage(String massage){
         try {

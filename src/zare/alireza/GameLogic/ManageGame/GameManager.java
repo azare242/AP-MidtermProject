@@ -6,19 +6,15 @@ public class GameManager {
 
     private Game game;
     private Server server;
-    private int readyPlayers;
 
-    public GameManager(Game game){
+    public GameManager(Server server,Game game){
         this.game = game;
-        readyPlayers = 0;
+        this.server = server;
     }
 
-    public void APlayerSaysReady(){
-        readyPlayers++;
-        if (readyPlayers == 10) {
-
-        }
+    public void introNight(){
+        server.sendMassageToPlayers("Intro Night Started");
+        server.sendMassageToPlayers("Intro Night Ended");
     }
-
 
 }

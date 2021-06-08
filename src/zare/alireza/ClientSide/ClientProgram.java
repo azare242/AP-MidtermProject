@@ -102,31 +102,33 @@ public class ClientProgram {
                     break;
                 } else System.out.println("WAITING FOR ENTER 1!");
             }
-            ObjectInputStream objectInputStream = new ObjectInputStream(socketInputStream);
+            ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
             try {
                 Role role = (Role) objectInputStream.readObject();
                 role.printInformation();
-                ready(dataOutputStream);
             } catch (ClassNotFoundException e) {
-                System.out.println("EXCEPTION CAUGHT: " + e.getMessage());
+                e.printStackTrace();
             }
+
+            startTheGame(dataInputStream,dataOutputStream,socket);
+
         } catch (IOException e) {
-            System.out.println("EXCEPTION CAUGHT: " + e.getMessage());
+            e.printStackTrace();
         }
 
     }
-    private void ready(DataOutputStream dataOutputStream){
-        System.out.println("ARE YOU READY?(when you reade ENTER 1): ");
-        String x;
+    private void startTheGame(DataInputStream dataInputStream,DataOutputStream dataOutputStream,Socket socket){
+        System.out.println("Waiting for server...");
         while (true){
-            x = scanner.next();
-            if (x.equals("1")) break;
-            else System.out.println("Invalid input ,try again");
-        }
-        try {
-            dataOutputStream.writeUTF(x);
-        } catch (IOException e) {
-            e.printStackTrace();
+            try {
+                String massage = dataInputStream.readUTF();
+                switch (massage){
+                    default -> System.out.println(massage);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                break;
+            }
         }
     }
 }
