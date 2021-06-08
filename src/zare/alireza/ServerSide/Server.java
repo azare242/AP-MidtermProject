@@ -73,9 +73,9 @@ public class Server {
                 String newUserName = getUserNameFromClient(socket.getInputStream(),socket.getOutputStream());
                 userNames.add(newUserName);
                 Role role = giveRoleToPlayer();
-                PlayerOnServer playerOnServer = new PlayerOnServer(socket,role,newUserName);
-                mapRoleToPlayerThread(role, playerOnServer);
-                threads.add(playerOnServer);
+                //PlayerOnServer playerOnServer = new PlayerOnServer(socket,role,newUserName);
+                //mapRoleToPlayerThread(role, playerOnServer);
+                //threads.add(playerOnServer);
                 sendRoleToClient(role,socket.getOutputStream());
                 clientsConnectedCounter++;
             } catch (IOException e) {

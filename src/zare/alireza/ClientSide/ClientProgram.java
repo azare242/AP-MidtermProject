@@ -95,6 +95,13 @@ public class ClientProgram {
                 }
                 else System.out.println("SERVER: " + massageFromServer);
             }
+            System.out.println("Are You Ready?[ENTER 1]");
+            while (true){
+                String massage = scanner.next();
+                if (massage.equals("1")) {
+                    break;
+                } else System.out.println("WAITING FOR ENTER 1!");
+            }
             ObjectInputStream objectInputStream = new ObjectInputStream(socketInputStream);
             try {
                 Role role = (Role) objectInputStream.readObject();

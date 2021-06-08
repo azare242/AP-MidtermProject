@@ -1,6 +1,7 @@
 package zare.alireza.ServerSide.PlayerThreads;
 
 import TEST.GameManager;
+import TEST.Server;
 import zare.alireza.Roles.*;
 
 import java.io.DataInput;
@@ -14,15 +15,16 @@ public  class PlayerOnServer extends Thread{
     private Socket socket;
     private Role role;
     private String userName;
-    private boolean isAlive;
+    private boolean isAlive = true;
     private DataInputStream dataInputStream;
     private DataOutputStream dataOutputStream;
     private GameManager gameManager;
-    public PlayerOnServer(Socket socket, Role role, String userName) {
+    private Server server;
+    public PlayerOnServer(Socket socket, Role role, String userName,Server server) {
         this.socket = socket;
         this.role = role;
         this.userName = userName;
-
+        this.server = server;
 
         try {
             dataOutputStream = new DataOutputStream(this.socket.getOutputStream());
@@ -48,22 +50,6 @@ public  class PlayerOnServer extends Thread{
 
     @Override
     public void run(){
-        try {
-            while (true){
-                String massage = dataInputStream.readUTF();
-
-                switch (massage){
-                    case "im_ready" ->  {
-                        gameManager.APlayerSaysReady();
-                    }
-                    case "game_is_ready" -> {
-
-                    }
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
     }
     public void receiveMassage(String massage){
