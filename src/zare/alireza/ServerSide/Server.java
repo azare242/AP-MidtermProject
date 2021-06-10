@@ -15,6 +15,7 @@ public class Server {
     private HashMap<String, PlayerOnServer> rolesForGame;
     private ArrayList<String> userNames;
     private ArrayList<PlayerOnServer> threads;
+    private int playersReady = 0;
     public Server(int port){
         try {
             serverSocket = new ServerSocket(port);
@@ -26,82 +27,63 @@ public class Server {
         userNames = new ArrayList<>();
         threads = new ArrayList<>();
     }
-    private boolean userNameIsValid(String userName){
+    public synchronized void addUserName(String userName){
+        userNames.add(userName);
+    }
+
+    public synchronized boolean userNameIsValid(String userName){
         for (String un : userNames){
             if (un.equalsIgnoreCase(userName)) return false;
         }
         return true;
     }
-    private synchronized String getUserNameFromClient(DataOutputStream dataOutputStream,DataInputStream dataInputStream){
-        String userName;
-        while (true){
-            try {
-                userName = dataInputStream.readUTF();
-                if (userNameIsValid(userName)) {
-                    dataOutputStream.writeUTF("DONE");
-                    return userName;
-                }
-                else dataOutputStream.writeUTF("UserName Is Already Taken,Try Again");
-            } catch (IOException e) {
-                System.out.println("EXCEPTION CAUGHT: " + e.getMessage());
-            }
-        }
-    }
-    private Role giveRoleToPlayer(){
+    public synchronized Role giveRoleToPlayer(){
         Role role = rolesForGiveToPlayers.get(0);
         rolesForGiveToPlayers.remove(0);
         return role;
     }
-    private void mapRoleToPlayerThread(Role role, PlayerOnServer pt){
+    public synchronized void increaseReadyPlayers(){
+        playersReady++;
+        System.out.println("Players Ready : " + playersReady);
+    }
+    public synchronized void mapRoleToPlayerThread(Role role, PlayerOnServer pt){
         rolesForGame.put(role.getClass().getSimpleName(),pt);
     }
-
-    private void sendRoleInformationToClient(Role role,OutputStream outputStream){
-        try {
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-            objectOutputStream.writeObject(role);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public synchronized boolean allPlayersReady(){
+        return playersReady == 10;
     }
+    public synchronized void startGame(){
+        GameManager gameManager = new GameManager(this,new Game(rolesForGame,userNames,threads));
+        gameManager.introNight();
+    }
+
     public void serverStart(){
 
         int clientsConnectedCounter = 0;
-        while (clientsConnectedCounter != 4){
+        while (true){
 
             try {
                 Socket socket = serverSocket.accept();
+                if (clientsConnectedCounter == 10){
+                    DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+                    dataOutputStream.writeUTF("game_is_full");
+                }
 
-                System.out.println(clientsConnectedCounter);
-                DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-                DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
-                String newUserName = getUserNameFromClient(dataOutputStream,dataInputStream);
-                userNames.add(newUserName);
-                Role role = giveRoleToPlayer();
-                PlayerOnServer newClientThread = new PlayerOnServer(role,newUserName,this,dataInputStream,dataOutputStream);
-                mapRoleToPlayerThread(role,newClientThread);
-                sendRoleInformationToClient(role,socket.getOutputStream());
-                threads.add(newClientThread);
-                //newClientThread.start();
-
+                else {
+                    clientsConnectedCounter++;
+                    System.out.println("New Player Joins");
+                    DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+                    DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
+                    PlayerOnServer playerOnServer = new PlayerOnServer(this,dataOutputStream,dataInputStream);
+                    threads.add(playerOnServer);
+                    playerOnServer.start();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-            clientsConnectedCounter += 1;
-            if (clientsConnectedCounter == 3){
-                GameManager gameManager = new GameManager(this,new Game(rolesForGame,userNames,threads));
-                setGameManagerForThreads(gameManager);
-                gameManager.introNight();
-            }
         }
 
 
-    }
-    private void setGameManagerForThreads(GameManager gameManager){
-        for (PlayerOnServer ps : threads) {
-            ps.setGameManager(gameManager);
-        }
     }
     private void startClientThreads(){
         for (PlayerOnServer ps : threads) {

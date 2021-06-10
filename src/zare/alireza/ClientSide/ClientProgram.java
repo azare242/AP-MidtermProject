@@ -1,6 +1,6 @@
 package zare.alireza.ClientSide;
 
-import zare.alireza.Roles.Role;
+import zare.alireza.Roles.*;
 
 import java.io.*;
 import java.net.*;
@@ -9,6 +9,7 @@ import java.util.*;
 public class ClientProgram {
 
     private Scanner scanner;
+    private Role role;
 
     public ClientProgram(){
         scanner = new Scanner(System.in);
@@ -28,6 +29,7 @@ public class ClientProgram {
             switch (chose){
                 case "1" -> {
                     goToGame();
+                    return;
                 }
                 case "2" -> running = false;
                 default -> System.out.println("Invalid Input");
@@ -57,78 +59,113 @@ public class ClientProgram {
         return true;
     }
 
-    private Socket connectToServer(){
+
+
+    private void goToGame() {
         int port = scanPort();
+        Socket socket = null;
         try {
-            return new Socket("localhost",port);
-        } catch (IOException e) {
-            System.out.println("EXCEPTION CAUGHT: " + e.getMessage());
-        }
-        return null;
-    }
-
-    private void goToGame(){
-        Socket socket  = connectToServer();
-        if (socket == null){
-            System.out.println("Something Went Wrong");
-            return;
-        }
-
-
-        try {
-            InputStream socketInputStream = socket.getInputStream();
-            OutputStream socketOutputStream = socket.getOutputStream();
-            DataOutputStream dataOutputStream = new DataOutputStream(socketOutputStream);
-            DataInputStream dataInputStream = new DataInputStream(socketInputStream);
-
-            String userName;
-            while (true){
-                System.out.print("Enter UserName: ");
-                userName = scanner.next();
-                dataOutputStream.writeUTF(userName);
-
-                String massageFromServer = dataInputStream.readUTF();
-
-                if (massageFromServer.equals("DONE")) {
-                    System.out.println("Successfully Logged In To Server");
-                    break;
-                }
-                else System.out.println("SERVER: " + massageFromServer);
-            }
-            System.out.println("Are You Ready?[ENTER 1]");
-            while (true){
-                String massage = scanner.next();
-                if (massage.equals("1")) {
-                    break;
-                } else System.out.println("WAITING FOR ENTER 1!");
-            }
-            ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
-            try {
-                Role role = (Role) objectInputStream.readObject();
-                role.printInformation();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-
-            startTheGame(dataInputStream,dataOutputStream,socket);
-
+            socket = new Socket("localhost", port);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        if (socket == null) {
+            System.out.println("Something Went Wrong");
+            return;
+        }
+        listeningToServer(socket);
     }
-    private void startTheGame(DataInputStream dataInputStream,DataOutputStream dataOutputStream,Socket socket){
-        System.out.println("Waiting for server...");
+    private void waitingForServer(){
+        System.out.println(
+                "**************\nWaiting For Server...\n**************"
+        );
+    }
+    private void listeningToServer(Socket socket){
+        try {
+            DataOutputStream sender = new DataOutputStream(socket.getOutputStream());
+            DataInputStream receiver = new DataInputStream(socket.getInputStream());
+            while (true){
+                waitingForServer();
+                String serverMassage = receiver.readUTF();
+                switch (serverMassage){
+                    case "username" :
+                        sendUsername(receiver,sender);
+                        break;
+                    case "r_u_ready?" :
+                        ready(sender);
+                        break;
+                    case "give_your_role":
+                        giveRole(receiver);
+                        break;
+                    case "here we go":
+                        System.out.println("game is started");
+                        return;
+                    default:
+                        System.out.println(serverMassage);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private void sendUsername(DataInputStream dataInputStream,DataOutputStream dataOutputStream){
+        System.out.print("Enter Your Username: ");
         while (true){
+            String userName = scanner.next();
             try {
-                String massage = dataInputStream.readUTF();
-                switch (massage){
-                    default -> System.out.println(massage);
+                dataOutputStream.writeUTF(userName);
+
+                String response = dataInputStream.readUTF();
+                if (response.equals("done")){
+                    System.out.println("User Name is agreed");
+                    break;
+                }
+                else if (response.equals("invalid")){
+                    System.out.println("User Name is invalid");
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-                break;
             }
+        }
+    }
+    private void ready(DataOutputStream dataOutputStream){
+        System.out.println("Are You Ready?[Enter 1]");
+        while (true){
+            String response = scanner.next();
+            if (response.equals("1")){
+                try {
+                    dataOutputStream.writeUTF("im_ready");
+                    break;
+                } catch (IOException e){
+                    e.printStackTrace();
+                }
+            }
+            else System.out.println("invalid input try again");
+        }
+    }
+    private Role initRole(String className){
+        switch (className){
+            case "GodFather" : return new GodFather();
+            case "DoctorLector" : return new DoctorLector();
+            case "SimpleMafia" : return new SimpleMafia();
+            case "Detector" : return new Detector();
+            case "Physician" : return new Physician();
+            case "Psychologist" : return new Psychologist();
+            case "Professional" : return new Professional();
+            case "Mayor" : return new Mayor();
+            case "IronSide" : return new IronSide();
+            case "SimpleCitizen" : return new SimpleCitizen();
+        }
+        return null;
+    }
+    private void giveRole(DataInputStream dataInputStream){
+        try {
+            String roleName = dataInputStream.readUTF();
+            Role role = initRole(roleName);
+            this.role = role;
+            role.printInformation();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

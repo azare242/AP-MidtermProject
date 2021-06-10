@@ -17,11 +17,11 @@ public class RolesList {
 
     private ArrayList<Role> initialize() {
         Role[] roles = new Role[]{
-                new SimpleMafia(), new Detector(),
-                new DoctorLector(), new GodFather(),
-                new IronSide(), new Mayor(),
-                new Physician(), new Professional(),
-                new Psychologist(), new SimpleCitizen()
+                new SimpleMafia(), new Mayor(),
+                new Physician(),new SimpleCitizen()
+                ,new GodFather(),new IronSide(),
+                new Professional(),new Psychologist(),
+                new Detector(),new DoctorLector()
         };
         return new ArrayList<>(Arrays.asList(roles));
     }
