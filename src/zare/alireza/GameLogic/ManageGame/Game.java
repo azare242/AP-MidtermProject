@@ -49,4 +49,10 @@ public class Game {
     public boolean citizensWins(){
         return mafias == 0 && citizens != 0;
     }
+
+    public void startDiscussion(){
+        for (PlayerOnServer player : threads){
+            player.chat();
+        }
+    }
 }

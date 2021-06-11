@@ -6,10 +6,12 @@ public class GameManager {
 
     private Game game;
     private Server server;
+    private ChatHistory chatHistory;
 
     public GameManager(Server server,Game game){
         this.game = game;
         this.server = server;
+        chatHistory = new ChatHistory();
     }
 
     private void sendMassageToMayor(){
@@ -29,5 +31,14 @@ public class GameManager {
         sendMassageToMayor();
         server.sendMassageToPlayers("Intro Night Ended");
     }
-
+    public synchronized void addMassageToHistory(String massage){
+        chatHistory.addMassage(massage);
+    }
+    public String getChatHistory(){
+        return chatHistory.get();
+    }
+    public void discussion(){
+        server.sendMassageToPlayers("It's time to discussion");
+        game.startDiscussion();
+    }
 }

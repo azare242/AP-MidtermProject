@@ -88,6 +88,9 @@ public class ClientProgram {
                 waitingForServer();
                 String serverMassage = receiver.readUTF();
                 switch (serverMassage){
+                    case "game_is_full" :
+                        System.out.println("Game is Full");
+                        return;
                     case "username" :
                         sendUsername(receiver,sender);
                         break;
@@ -97,11 +100,19 @@ public class ClientProgram {
                     case "give_your_role":
                         giveRole(receiver);
                         break;
-                    case "here we go":
-                        System.out.println("game is started");
-                        return;
+                    case "chat_time":
+                        boolean exited = chatting(sender,receiver);
+                        if (exited){
+                            System.out.println("You Exited The Game NOOB");
+                            receiver.close();
+                            sender.close();
+                            socket.close();
+                            return;
+                        }
+                        break;
                     default:
                         System.out.println(serverMassage);
+                        break;
                 }
             }
         } catch (IOException e) {
@@ -167,5 +178,32 @@ public class ClientProgram {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    private boolean chatting(DataOutputStream dataOutputStream,DataInputStream dataInputStream){
+        System.out.println("Your Turn to chat: ");
+        String garbage = scanner.nextLine();
+        while (true){
+            try {
+                System.out.print("Send Massage: [at end enter \"done\"] : ");
+                String massage = scanner.nextLine();
+                if (massage.equalsIgnoreCase("HISTORY")){
+                    dataOutputStream.writeUTF("HISTORY");
+                    String history = dataInputStream.readUTF();
+                    System.out.println(history);
+                }
+                else if (massage.equalsIgnoreCase("exit")){
+                    dataOutputStream.writeUTF("exit");
+                    return true;
+                }
+                else if (massage.equalsIgnoreCase("done")){
+                    dataOutputStream.writeUTF("done");
+                    break;
+                }
+                else dataOutputStream.writeUTF(massage);
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 }

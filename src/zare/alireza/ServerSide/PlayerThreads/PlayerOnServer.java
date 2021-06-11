@@ -7,6 +7,7 @@ import zare.alireza.Roles.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.Socket;
 
 
 public  class PlayerOnServer extends Thread{
@@ -15,16 +16,18 @@ public  class PlayerOnServer extends Thread{
     private String userName;
     private boolean isAlive = true;
     private boolean isReady = false;
+    private boolean onGame = true;
     private DataInputStream receiver;
     private DataOutputStream sender;
     private Server server;
+    private Socket socket;
 
-
-   public PlayerOnServer(Server server,DataOutputStream dataOutputStream,DataInputStream dataInputStream){
+   public PlayerOnServer(Server server,DataOutputStream dataOutputStream,DataInputStream dataInputStream,Socket socket){
        this.server = server;
 
        receiver = dataInputStream;
        sender = dataOutputStream;
+       this.socket = socket;
    }
 
 
@@ -91,5 +94,44 @@ public  class PlayerOnServer extends Thread{
         }
     }
 
+    public void chat(){
+       try {
+           sender.writeUTF("chat_time");
+           while (true){
+               String massage = receiver.readUTF();
 
+               if (massage.equalsIgnoreCase("HISTORY")){
+                   sender.writeUTF(server.getChatHistory());
+               }
+               else if (massage.equalsIgnoreCase("done")){
+                   break;
+               }
+               else if (massage.equalsIgnoreCase("exit")){
+                   isAlive = false;
+                   onGame = false;
+                   String massageToSend =  "\"" + userName + "\" : " + "i quit the match";
+
+                   server.aPlayerSendsMassageToOtherPlayers(massageToSend,this);
+                   sender.close();
+                   receiver.close();
+                   socket.close();
+                   break;
+               }
+               else {
+                   String massageToSend =  "\"" + userName + "\" : " + massage;
+
+                   server.addMassageToHistory(massageToSend);
+                   server.aPlayerSendsMassageToOtherPlayers(massageToSend,this);
+               }
+           }
+       }catch (IOException e){
+           e.printStackTrace();
+       }
+    }
+    public boolean alive(){
+       return isAlive;
+    }
+    public boolean isOnGame(){
+       return onGame;
+    }
 }

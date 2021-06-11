@@ -16,6 +16,7 @@ public class Server {
     private ArrayList<String> userNames;
     private ArrayList<PlayerOnServer> threads;
     private int playersReady = 0;
+    private GameManager gameManager;
     public Server(int port){
         try {
             serverSocket = new ServerSocket(port);
@@ -53,8 +54,12 @@ public class Server {
         return playersReady == 10;
     }
     public synchronized void startGame(){
-        GameManager gameManager = new GameManager(this,new Game(rolesForGame,userNames,threads));
+        gameManager = new GameManager(this,new Game(rolesForGame,userNames,threads));
         gameManager.introNight();
+        gameManager.discussion();
+    }
+    public synchronized void addMassageToHistory(String massage){
+        gameManager.addMassageToHistory(massage);
     }
 
     public void serverStart(){
@@ -74,7 +79,7 @@ public class Server {
                     System.out.println("New Player Joins");
                     DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
                     DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
-                    PlayerOnServer playerOnServer = new PlayerOnServer(this,dataOutputStream,dataInputStream);
+                    PlayerOnServer playerOnServer = new PlayerOnServer(this,dataOutputStream,dataInputStream,socket);
                     threads.add(playerOnServer);
                     playerOnServer.start();
                 }
@@ -85,9 +90,25 @@ public class Server {
 
 
     }
-    private void startClientThreads(){
-        for (PlayerOnServer ps : threads) {
-            ps.start();
+    public String getChatHistory(){
+        return gameManager.getChatHistory();
+    }
+    public void aPlayerSendsMassageToOtherPlayers(String massage, PlayerOnServer sender){
+        for (PlayerOnServer player : threads){
+            if (player != sender && player.isOnGame()){
+                player.receiveMassage(massage);
+            }
+        }
+    }
+    public void checkPlayersOnGame(){
+        ArrayList<PlayerOnServer> checked = new ArrayList<>();
+        for (PlayerOnServer player : threads){
+            if (!player.isOnGame()){
+                checked.add(player);
+            }
+        }
+        for (PlayerOnServer player : checked){
+            threads.remove(player);
         }
     }
     public void sendMassageToPlayers(String massage){
