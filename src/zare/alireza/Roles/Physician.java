@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 public class Physician extends Citizen{
 
+    private boolean canSaveHimself = true;
     public Physician() {
         super();
         information =
@@ -18,6 +19,13 @@ public class Physician extends Citizen{
 
         while (true){
             String index = scanner.next();
+            if (index.equals("0")){
+                if (canSaveHimself) {
+                    canSaveHimself = false;
+                    return 0;
+                }
+                else System.out.println("you saved your self once!");
+            }
             if (list.contains("(" + index + ")")){
                 result = Integer.parseInt(index);
                 break;
