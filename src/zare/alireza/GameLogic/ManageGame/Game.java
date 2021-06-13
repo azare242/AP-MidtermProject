@@ -1,6 +1,6 @@
 package zare.alireza.GameLogic.ManageGame;
 
-import zare.alireza.GameLogic.phases.*;
+
 import zare.alireza.ServerSide.PlayerThreads.PlayerOnServer;
 
 import java.util.ArrayList;
@@ -13,15 +13,13 @@ public class Game {
     private ArrayList<PlayerOnServer> threads;
     private int mafias;
     private int citizens;
-    private Phase[] phases;
+
 
     public Game(HashMap<String, PlayerOnServer> playerThreadHashMap, ArrayList<String> userNames, ArrayList<PlayerOnServer> threads) {
         this.playerThreadHashMap = playerThreadHashMap;
         this.userNames = userNames;
         this.threads = threads;
-        phases = new Phase[]{
-                new IntroNight(),new NormalNight(),new Discussion(),new ElectionAndExecution()
-        };
+
         mafias = 3;
         citizens = 7;
     }
@@ -30,18 +28,6 @@ public class Game {
         return playerThreadHashMap.get(roleName);
     }
 
-    public Phase introNight(){
-        return phases[0];
-    }
-    public Phase NormalNight(){
-        return phases[1];
-    }
-    public Phase discussion(){
-        return phases[2];
-    }
-    public Phase electionAndExecution(){
-        return phases[3];
-    }
     public boolean mafiaWins(){
         return mafias == citizens && mafias != 0;
     }
@@ -53,6 +39,47 @@ public class Game {
     public void startDiscussion(){
         for (PlayerOnServer player : threads){
             player.chat();
+        }
+    }
+
+    public void kill(String userName){
+        for (PlayerOnServer player : threads){
+            if (player.getUserName().equals(userName)){
+                player.kill();
+            }
+        }
+    }
+    public void save(String userName){
+        for (PlayerOnServer player : threads){
+            if (player.getUserName().equals(userName)){
+                player.saved();
+            }
+        }
+    }
+    public boolean checkProKill(String userName){
+
+        for (PlayerOnServer player : threads){
+            if (player.getUserName().equals(userName)){
+                return player.isMafia();
+            }
+        }
+        return false;
+    }
+    public void silent(String userName){
+        for (PlayerOnServer player : threads){
+            if (player.getUserName().equals(userName)){
+                player.silent();
+            }
+        }
+    }
+    public String getUserName(int index){
+        return userNames.get(index);
+    }
+    public void execute(String userName){
+        for (PlayerOnServer player : threads){
+            if (player.getUserName().equals(userName)){
+                player.execute();
+            }
         }
     }
 }

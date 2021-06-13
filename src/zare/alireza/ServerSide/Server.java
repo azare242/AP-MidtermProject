@@ -16,6 +16,7 @@ public class Server {
     private ArrayList<String> userNames;
     private ArrayList<PlayerOnServer> threads;
     private int playersReady = 0;
+    private int votedPlayers = 0;
     private GameManager gameManager;
     public Server(int port){
         try {
@@ -114,6 +115,36 @@ public class Server {
     public void sendMassageToPlayers(String massage){
         for (PlayerOnServer ps : threads){
             ps.receiveMassage(massage);
+        }
+    }
+    public void getAlivePlayersListToAPlayer(PlayerOnServer p){
+        String list = "";
+        int i = 1;
+        for (PlayerOnServer player : threads){
+            if (player != p && player.alive()){
+                list += "(" + i + ")" + " - " + player.getUserName() + '\n';
+            }
+            i++;
+        }
+        p.receiveMassage(list);
+    }
+    public void setVote(String userName){
+        gameManager.setVote(userName);
+        votedPlayers++;
+    }
+    public boolean allPlayersVoted(){
+        return votedPlayers == 10;
+    }
+    public void checkVotes(){
+        gameManager.checkVotes();
+        votedPlayers = 0;
+    }
+    public String getPlayerUserName(int index){
+        return threads.get(index - 1).getUserName();
+    }
+    public void startVoting(){
+        for (PlayerOnServer player : threads){
+            player.voting();
         }
     }
 }

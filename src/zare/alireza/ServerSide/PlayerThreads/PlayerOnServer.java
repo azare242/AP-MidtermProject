@@ -1,6 +1,6 @@
 package zare.alireza.ServerSide.PlayerThreads;
 
-import zare.alireza.GameLogic.ManageGame.GameManager;
+
 import zare.alireza.ServerSide.Server;
 import zare.alireza.Roles.*;
 
@@ -15,8 +15,10 @@ public  class PlayerOnServer extends Thread{
     private Role role;
     private String userName;
     private boolean isAlive = true;
-    private boolean isReady = false;
     private boolean onGame = true;
+    private boolean isReady = false;
+    private boolean canTalk = true;
+    private boolean cankill = true;
     private DataInputStream receiver;
     private DataOutputStream sender;
     private Server server;
@@ -31,7 +33,17 @@ public  class PlayerOnServer extends Thread{
    }
 
 
-    public void killOrExecute(){
+   public void silent(){
+       canTalk = false;
+   }
+   public void execute(){
+       this.isAlive = false;
+   }
+    public void kill(){
+       if (!cankill){
+           cankill = true;
+           return;
+       }
         this.isAlive = false;
     }
     public void saved() {
@@ -78,6 +90,7 @@ public  class PlayerOnServer extends Thread{
 
     private void sendRole(){
        Role role = server.giveRoleToPlayer();
+       setRole(role);
        try {
            sender.writeUTF(role.getClass().getSimpleName());
            server.mapRoleToPlayerThread(role,this);
@@ -94,8 +107,18 @@ public  class PlayerOnServer extends Thread{
         }
     }
 
+
+    public void voting(){
+       new VotingThread(this,server,sender,receiver).start();
+    }
     public void chat(){
        try {
+           if (!canTalk){
+               sender.writeUTF("oops,You are silenced by Psychologist,so you cant talk");
+               canTalk = true;
+               return;
+           }
+
            sender.writeUTF("chat_time");
            while (true){
                String massage = receiver.readUTF();
@@ -128,10 +151,20 @@ public  class PlayerOnServer extends Thread{
            e.printStackTrace();
        }
     }
+    private void setRole(Role role){
+       this.role = role;
+       if (role.getClass().getSimpleName().equals("IronSide")){
+           cankill = false;
+       }
+    }
     public boolean alive(){
        return isAlive;
     }
     public boolean isOnGame(){
        return onGame;
     }
+    public boolean isMafia(){
+       return role instanceof Mafia;
+    }
+
 }

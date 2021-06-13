@@ -2,6 +2,7 @@ package zare.alireza.ClientSide;
 
 import zare.alireza.Roles.*;
 
+import javax.xml.crypto.Data;
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -100,6 +101,12 @@ public class ClientProgram {
                     case "give_your_role":
                         giveRole(receiver);
                         break;
+                    case "opinion":
+                        sendOpinion(sender,receiver);
+                        break;
+                    case "action":
+                        action(receiver,sender);
+                        break;
                     case "chat_time":
                         boolean exited = chatting(sender,receiver);
                         if (exited){
@@ -109,6 +116,9 @@ public class ClientProgram {
                             socket.close();
                             return;
                         }
+                        break;
+                    case "voting":
+                        voting(sender,receiver);
                         break;
                     default:
                         System.out.println(serverMassage);
@@ -205,5 +215,53 @@ public class ClientProgram {
             }
         }
         return false;
+    }
+    private boolean indexIsValid(String index , String list){
+        return list.contains("(" + index + ")");
+    }
+    private void sendOpinion(DataOutputStream dataOutputStream,DataInputStream dataInputStream){
+        try {
+            String list = dataInputStream.readUTF();
+            System.out.println(list);
+            System.out.println("Chose Your Opinion to tell GodFather: ");
+            while (true){
+                String index = scanner.next();
+                if (indexIsValid(index,list)){
+                    dataOutputStream.writeUTF(index);
+                    break;
+                }
+                else System.out.println("invalid input , try again");
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+    private void action(DataInputStream dataInputStream,DataOutputStream dataOutputStream){
+        try {
+            String list = dataInputStream.readUTF();
+
+            int index = role.action(list,scanner);
+            dataOutputStream.writeUTF(String.valueOf(index));;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private void voting(DataOutputStream dataOutputStream,DataInputStream dataInputStream){
+
+        try {
+            System.out.println("Voting Time [for vote to noOne enter 0]");
+            String list = dataInputStream.readUTF();
+            System.out.println(list);
+            while (true){
+                String chose = scanner.next();
+                if (indexIsValid(chose,list) || chose.equals("0")){
+                    dataOutputStream.writeUTF(chose);
+                    break;
+                }
+                else System.out.println("invalid input , try again");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
