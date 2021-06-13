@@ -151,20 +151,85 @@ public  class PlayerOnServer extends Thread{
            e.printStackTrace();
        }
     }
+    public String action() {
+
+        String action = "";
+        try {
+            sender.writeUTF("action");
+
+
+            if (isDoctorLector()){
+                server.sendListToDoctorLector(this);
+                String chose = receiver.readUTF();
+                int index = Integer.parseInt(chose);
+                action = server.getPlayerUserName(index);
+            }
+            else if (isIronSide()){
+                sender.writeUTF("IronSide Doesn't need LIST");
+                String chose = receiver.readUTF();
+                if (chose.equals("0")){
+                    return "NO";
+                }
+                else return "YES";
+            }
+            else if (isMayor()){
+                sender.writeUTF("Mayor Doesn't need LIST");
+                String chose = receiver.readUTF();
+                return chose;
+            }
+            else {
+                server.getAlivePlayersListToAPlayer(this);
+                String chose = receiver.readUTF();
+                int index = Integer.parseInt(chose);
+                action = server.getPlayerUserName(index);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return action;
+    }
+    public String opinion(){
+        String opinion = "";
+        try {
+            sender.writeUTF("opinion");
+            server.getAlivePlayersListToAPlayer(this);
+            String chose = receiver.readUTF();
+            int index = Integer.parseInt(chose);
+            opinion = server.getPlayerUserName(index);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return opinion;
+    }
     private void setRole(Role role){
        this.role = role;
        if (role.getClass().getSimpleName().equals("IronSide")){
            cankill = false;
        }
     }
+    public boolean isMayor(){
+        return role.getClass().getSimpleName().equals("Mayor");
+    }
     public boolean alive(){
-       return isAlive;
+        return isAlive;
     }
     public boolean isOnGame(){
-       return onGame;
+        return onGame;
+    }
+    public boolean isIronSide(){
+        return this.role.getClass().getSimpleName().equals("IronSide");
+    }
+    public boolean investigation(){
+        return role.getInvestigation() == 'B';
     }
     public boolean isMafia(){
-       return role instanceof Mafia;
+        return role instanceof Mafia;
     }
-
+    public boolean isDoctorLector(){
+        return role.getClass().getSimpleName().equals("DoctorLector");
+    }
+    public String getRoleName(){
+        return role.getClass().getSimpleName();
+    }
 }

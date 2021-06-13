@@ -147,4 +147,50 @@ public class Server {
             player.voting();
         }
     }
+    private String shuffledStringOfOutRoles(ArrayList<String> list){
+        Collections.shuffle(list);
+        String shuffledList = "";
+        for (String s : list){
+            shuffledList += "\t >>> " + s;
+        }
+        return shuffledList;
+    }
+    public String getOutRoles(){
+        ArrayList<String> list = new ArrayList<>();
+        for (PlayerOnServer player : threads){
+            if (!player.alive()){
+                list.add(player.getRoleName());
+            }
+        }
+        return shuffledStringOfOutRoles(list);
+    }
+    public boolean isPlayerAlive(String userName){
+        for (PlayerOnServer player : threads){
+            if (player.getUserName().equals(userName)){
+                return player.alive();
+            }
+        }
+        return false;
+    }
+    public String investigation(String userName){
+        for (PlayerOnServer player : threads){
+            if (player.getUserName().equals(userName)){
+                if (player.investigation()) return "YES";
+                else return "NO";
+            }
+        }
+        return "NO";
+    }
+    public void sendListToDoctorLector(PlayerOnServer doctorLector){
+        String list = "";
+        int i = 1;
+        for (PlayerOnServer player : threads){
+            if (player.isMafia() && player != doctorLector){
+                list += "(" + i + ")" + " - " + player.getUserName() + '\n';
+            }
+            i++;
+        }
+        doctorLector.receiveMassage(list);
+    }
+
 }

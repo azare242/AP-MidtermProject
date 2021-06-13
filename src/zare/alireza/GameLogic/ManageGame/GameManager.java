@@ -53,6 +53,124 @@ public class GameManager {
         server.sendMassageToPlayers("It's time to discussion");
         game.startDiscussion();
     }
+
+    private String getSimpleMafiaOpinion(){
+        PlayerOnServer simpleMafia = game.getPlayerThread("SimpleMafia");
+        String opinion = simpleMafia.opinion();
+        return simpleMafia.getUserName() + " says " + opinion;
+    }
+    private String getDoctorLectorOpinion(){
+        PlayerOnServer doctorLector = game.getPlayerThread("DoctorLector");
+        String opinion = doctorLector.opinion();
+        return doctorLector.getUserName() + " says " + opinion;
+    }
+    private String godFatherAction(){
+        PlayerOnServer godFather = game.getPlayerThread("GodFather");
+        String action = godFather.action();
+        return action;
+    }
+    private String doctorLectorAction(){
+        PlayerOnServer doctorLector = game.getPlayerThread("DoctorLector");
+        String action = doctorLector.action();
+        return action;
+    }
+    private String physicianAction(){
+        PlayerOnServer physician = game.getPlayerThread("Physician");
+        String action = physician.action();
+        return action;
+    }
+    private void detectorAction(){
+        PlayerOnServer detector = game.getPlayerThread("Detector");
+        String action = detector.action();
+        investigation(action,detector);
+    }
+    private void investigation(String userName, PlayerOnServer detector){
+        String massage = server.investigation(userName);
+        detector.receiveMassage(massage);
+    }
+
+    private boolean proKill(String userName){
+        return game.checkProKill(userName);
+    }
+    private String professionalAction(){
+        PlayerOnServer professional = game.getPlayerThread("Professional");
+        String action = professional.action();
+        if (proKill(action)){
+            action = action;
+        }
+        else action = professional.getUserName();
+
+        return action;
+    }
+    private String psychologistAction() {
+        PlayerOnServer psychologist = game.getPlayerThread("Psychologist");
+        String action = psychologist.action();
+        return action;
+    }
+    private String ironSideAction(){
+        PlayerOnServer ironSide = game.getPlayerThread("IronSide");
+        String action = ironSide.action();
+        return action;
+    }
+    private void sendOpinionsToGodFather(String... opinions){
+        String massage = "";
+        for (String opinion : opinions){
+            massage += opinion + '\n';
+        }
+        game.getPlayerThread("GodFather").receiveMassage(massage);
+    }
+    private void ironSideActionHandle(String action){
+        if (action.equalsIgnoreCase("YES")) {
+            String outRoles = server.getOutRoles();
+            server.sendMassageToPlayers("This Roles are Dead:\n" + outRoles);
+        }
+        else return;
+    }
+    public void night(){
+        String simpleMafiaOpinion = getSimpleMafiaOpinion();
+        String doctorLectorOpinion = getDoctorLectorOpinion();
+        sendOpinionsToGodFather(simpleMafiaOpinion,doctorLectorOpinion);
+        String godFatherAction = godFatherAction();
+        String doctorLectorAction = doctorLectorAction();
+        String physicianAction = physicianAction();
+        detectorAction();
+        String psychoAction = psychologistAction();
+        String professionalAction = professionalAction();
+        String ironSideAction = ironSideAction();
+        server.sendMassageToPlayers("EVERY ONE WAKE UP!");
+        handleNightEvents(godFatherAction,doctorLectorAction,physicianAction,professionalAction);
+        makeSilent(psychoAction);
+        ironSideActionHandle(ironSideAction);
+    }
+    private void killsOrSavesHandle(String[] actions){
+        kill(actions[0]);
+        kill(actions[3]);
+        save(actions[1]);
+        save(actions[2]);
+        if (actions[1].equals(actions[3])){
+            save(actions[3]);
+        }
+    }
+    private void handleNightEvents(String... actions){
+        String events = "";
+        killsOrSavesHandle(actions);
+
+        if (!server.isPlayerAlive(actions[0])){
+            events += "We Lost " + actions[0];
+        }
+
+        if (!server.isPlayerAlive(actions[3])){
+            events += "We Lost " + actions[3];
+        }
+
+        if (events.length() == 0){
+            events += "Last Night is a good night";
+        }
+        server.sendMassageToPlayers(events);
+    }
+    private void kill(String userName){
+        game.kill(userName);
+    }
     public void startVoting(){
         server.startVoting();
     }
@@ -86,6 +204,9 @@ public class GameManager {
         Integer noOneVotes = votes.get("NoOne");
         return noOneVotes.equals(maxVote()) || noOneVotes >= 5;
     }
+    private void makeSilent(String userName){
+        game.silent(userName);
+    }
     public void checkVotes() {
         if (!checkTheVotesAreRegular() || noOneHasMaxVotes()) {
             server.setVote("No One Executed");
@@ -100,11 +221,21 @@ public class GameManager {
         }
 
     }
-    private void execute(String userName){
-        //TODO: ASK FROM MAYOR
+    private void save(String userName) {
+        game.save(userName);
+    }
 
-        executePlayer(userName);
-        server.sendMassageToPlayers(userName + " has been executed , ask his role from iron side :D");
-        clearVotes();
+    private void execute(String userName) {
+        PlayerOnServer mayor = game.getPlayerThread("Mayor");
+        String MAYORAction = mayor.action();
+        if (MAYORAction.equals("1")) {
+            server.sendMassageToPlayers("No One Executed");
+            clearVotes();
+        } else {
+
+            executePlayer(userName);
+            server.sendMassageToPlayers(userName + " has been executed , ask his role from iron side :D");
+            clearVotes();
+        }
     }
 }
