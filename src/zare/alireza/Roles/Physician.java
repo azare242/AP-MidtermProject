@@ -15,6 +15,7 @@ public class Physician extends Citizen{
     public int action(String list, Scanner scanner) {
         int result;
         System.out.println(list);
+        System.out.println("(0) - yourself");
         System.out.println("well, WHO?");
 
         while (true){
