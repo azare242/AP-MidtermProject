@@ -1,5 +1,7 @@
 package zare.alireza.Roles;
 
+import java.util.Scanner;
+
 public class SimpleMafia extends Mafia{
 
     public SimpleMafia(){
@@ -9,12 +11,17 @@ public class SimpleMafia extends Mafia{
                 "\nTry To Win!";
     }
     @Override
-    public void action() {
-        //TODO: IDK :|
+    public int action(String list, Scanner scanner) {
+        return 0;
     }
 
     @Override
     public void printInformation() {
         System.out.println("YOU ARE SIMPLE MAFIA: \n"+ information);
+    }
+
+    @Override
+    public char getInvestigation() {
+        return investigation;
     }
 }

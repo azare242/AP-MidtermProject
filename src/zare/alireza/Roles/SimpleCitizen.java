@@ -1,5 +1,7 @@
 package zare.alireza.Roles;
 
+import java.util.Scanner;
+
 public class SimpleCitizen extends Citizen{
 
     public SimpleCitizen(){
@@ -8,12 +10,17 @@ public class SimpleCitizen extends Citizen{
     }
 
     @Override
-    public void action() {
-        //TODO: IDK :|
+    public int action(String list, Scanner scanner) {
+        return 0;
     }
 
     @Override
     public void printInformation() {
         System.out.println("YOU ARE SIMPLE CITIZEN: \n"+ information);
+    }
+
+    @Override
+    public char getInvestigation() {
+        return investigation;
     }
 }

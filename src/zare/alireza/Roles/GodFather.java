@@ -1,5 +1,7 @@
 package zare.alireza.Roles;
 
+import java.util.Scanner;
+
 public class GodFather extends Mafia{
 
     public GodFather(){
@@ -16,8 +18,25 @@ public class GodFather extends Mafia{
     public void printInformation(){
         System.out.println("YOU ARE GOD FATHER: \n" + information);
     }
+
     @Override
-    public void action() {
-        //TODO:SHOT SOMEONE
+    public char getInvestigation() {
+        return investigation;
     }
+
+    public int action(String list, Scanner scanner) {
+        int result;
+        System.out.println(list);
+        System.out.println("well, WHO?");
+
+        while (true){
+            String index = scanner.next();
+            if (list.contains("(" + index + ")")){
+                result = Integer.parseInt(index);
+                break;
+            }
+        }
+        return result;
+    }
+
 }

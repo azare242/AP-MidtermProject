@@ -1,5 +1,7 @@
 package zare.alireza.Roles;
 
+import java.util.Scanner;
+
 public abstract class Citizen implements Role{
     protected String information;
     protected char investigation;
@@ -8,6 +10,7 @@ public abstract class Citizen implements Role{
         super();
         investigation = 'W';
     }
-    public abstract void action();
+    public abstract int action(String list, Scanner scanner);
     public abstract void printInformation();
+    public abstract char getInvestigation();
 }

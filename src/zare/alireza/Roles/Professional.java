@@ -1,5 +1,7 @@
 package zare.alireza.Roles;
 
+import java.util.Scanner;
+
 public class Professional extends Citizen{
 
     public Professional(){
@@ -7,12 +9,28 @@ public class Professional extends Citizen{
         information = "You Can Shot at night , but be careful ; if you shot citizens you will die";
     }
     @Override
-    public void action() {
-        //TODO: IF HE WANTS SHOT
+    public int action(String list, Scanner scanner) {
+        int result;
+        System.out.println(list);
+        System.out.println("well, WHO?");
+
+        while (true){
+            String index = scanner.next();
+            if (list.contains("(" + index + ")")){
+                result = Integer.parseInt(index);
+                break;
+            }
+        }
+        return result;
     }
 
     @Override
     public void printInformation() {
         System.out.println("YOU ARE PROFESSIONAL: \n"+ information);
+    }
+
+    @Override
+    public char getInvestigation() {
+        return investigation;
     }
 }

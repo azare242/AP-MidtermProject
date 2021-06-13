@@ -1,5 +1,7 @@
 package zare.alireza.Roles;
 
+import java.util.Scanner;
+
 public abstract class Mafia implements Role{
     protected String information;
     protected char investigation;
@@ -9,8 +11,7 @@ public abstract class Mafia implements Role{
         investigation = 'B';
     }
 
-    @Override
-    public abstract void action();
-    @Override
+    public abstract int action(String list, Scanner scanner);
     public abstract void printInformation();
+    public abstract char getInvestigation();
 }
