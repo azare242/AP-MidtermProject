@@ -33,6 +33,24 @@ public  class PlayerOnServer extends Thread{
    }
 
 
+    public void deadMenu(){
+        try {
+            sender.writeUTF("you_dead");
+            String answer = receiver.readUTF();
+            if (answer.equals("y")){
+                return;
+            }
+            else if (answer.equals("n")){
+                onGame = false;
+                receiver.close();
+                sender.close();
+                socket.close();
+                return;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
    public void silent(){
        canTalk = false;
    }

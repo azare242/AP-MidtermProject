@@ -108,8 +108,8 @@ public class ClientProgram {
                         action(receiver,sender);
                         break;
                     case "chat_time":
-                        boolean exited = chatting(sender,receiver);
-                        if (exited){
+                        boolean flee = chatting(sender,receiver);
+                        if (flee){
                             System.out.println("You Exited The Game NOOB");
                             receiver.close();
                             sender.close();
@@ -119,6 +119,16 @@ public class ClientProgram {
                         break;
                     case "voting":
                         voting(sender,receiver);
+                        break;
+                    case "you_dead":
+                        boolean exited = deathCam(sender);
+                        if (exited){
+                            System.out.println("Good Bye Champ");
+                            receiver.close();
+                            sender.close();
+                            socket.close();
+                            return;
+                        }
                         break;
                     default:
                         System.out.println(serverMassage);
@@ -262,6 +272,25 @@ public class ClientProgram {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+    private boolean deathCam(DataOutputStream dataOutputStream){
+        System.out.println("Do You Want Watch Resume the game? [1 - > yes / 2 - > No]");
+        while (true) {
+            try {
+                String choice = scanner.next();
+                if (choice.equals("1")) {
+                    dataOutputStream.writeUTF("y");
+                    return false;
+                }
+                else if (choice.equals("2")){
+                    dataOutputStream.writeUTF("n");
+                    return true;
+                }
+                else System.out.println("y?n?");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

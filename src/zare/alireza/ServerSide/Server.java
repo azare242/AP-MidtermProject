@@ -192,5 +192,12 @@ public class Server {
         }
         doctorLector.receiveMassage(list);
     }
+    public void playerDeadMenu(String userName){
+        for (PlayerOnServer player : threads){
+            if (player.getUserName().equals(userName)){
+                player.deadMenu();
+            }
+        }
+    }
 
 }

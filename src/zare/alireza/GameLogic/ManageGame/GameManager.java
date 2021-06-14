@@ -157,10 +157,12 @@ public class GameManager {
 
         if (!server.isPlayerAlive(actions[0])){
             events += "We Lost " + actions[0];
+            server.playerDeadMenu(actions[0]);
         }
 
         if (!server.isPlayerAlive(actions[3])){
             events += "We Lost " + actions[3];
+            server.playerDeadMenu(actions[0]);
         }
 
         if (events.length() == 0){
@@ -176,6 +178,7 @@ public class GameManager {
     }
     private void executePlayer(String userName){
         game.execute(userName);
+        server.playerDeadMenu(userName);
     }
     public void setVote(String userName){
         Integer count = votes.get(userName);
