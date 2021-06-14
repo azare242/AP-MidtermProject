@@ -13,10 +13,10 @@ public class Professional extends Citizen{
         int result;
         System.out.println(list);
         System.out.println("well, WHO?");
-
+        System.out.println("0 for nobody");
         while (true){
             String index = scanner.next();
-            if (list.contains("(" + index + ")")){
+            if (list.contains("(" + index + ")") || index.equals("0")){
                 result = Integer.parseInt(index);
                 break;
             }

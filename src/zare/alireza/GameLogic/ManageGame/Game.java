@@ -46,6 +46,11 @@ public class Game {
         for (PlayerOnServer player : threads){
             if (player.getUserName().equals(userName)){
                 player.kill();
+                if (player.isMafia() && !player.alive()){
+                    mafias--;
+                }
+                else if (!player.isMafia() && !player.alive())
+                    citizens--;
             }
         }
     }
@@ -79,6 +84,10 @@ public class Game {
         for (PlayerOnServer player : threads){
             if (player.getUserName().equals(userName)){
                 player.execute();
+                if (player.isMafia()){
+                    mafias--;
+                }
+                else citizens--;
             }
         }
     }

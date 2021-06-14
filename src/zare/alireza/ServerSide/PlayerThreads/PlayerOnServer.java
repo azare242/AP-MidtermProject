@@ -207,7 +207,8 @@ public  class PlayerOnServer extends Thread{
                 server.getAlivePlayersListToAPlayer(this);
                 String chose = receiver.readUTF();
                 int index = Integer.parseInt(chose);
-                action = server.getPlayerUserName(index);
+                if (index == 0) action = "NoBody";
+                else action = server.getPlayerUserName(index);
             }
 
         } catch (IOException e) {
