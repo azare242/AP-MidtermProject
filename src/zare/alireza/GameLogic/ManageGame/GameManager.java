@@ -334,8 +334,9 @@ public class GameManager {
     }
     public void checkVotes() {
         if (!checkTheVotesAreRegular() || noOneHasMaxVotes()) {
-            server.setVote("No One Executed");
+            server.sendMassageToPlayers("No One Executed");
             clearVotes();
+            startGame();
         } else {
             for (int i = 0; i < server.getCapacity(); ++i) {
                 String userName = game.getUserName(i);
