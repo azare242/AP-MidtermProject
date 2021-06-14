@@ -61,8 +61,7 @@ public class Server {
     }
     public synchronized void startGame(){
         gameManager = new GameManager(this,new Game(capacity,rolesForGame,userNames,threads));
-        gameManager.introNight();
-        gameManager.discussion();
+        gameManager.startGame();
     }
     public synchronized void addMassageToHistory(String massage){
         gameManager.addMassageToHistory(massage);
