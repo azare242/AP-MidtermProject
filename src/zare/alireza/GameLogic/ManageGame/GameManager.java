@@ -35,11 +35,22 @@ public class GameManager {
         PlayerOnServer sm = game.getPlayerThread("SimpleMafia");
         PlayerOnServer dl = game.getPlayerThread("DoctorLector");
         PlayerOnServer gf = game.getPlayerThread("GodFather");
-        String massage = "hey god father wakeup , you must know " + game.getPlayerThread("DoctorLector").getUserName() + " is doctor lector and " + game.getPlayerThread("SimpleMafia").getUserName()
-                + " is simple mafia";
+        String massage ="hey god father wakeup ";
+        if (sm != null){
+            massage += " You Must Know" + sm.getUserName() + " is SimpleMafia";
+        }
+
+        if (dl != null){
+            massage += " and " + dl.getUserName() + " is DoctorLector";
+        }
+
         gf.receiveMassage(massage);
-        sm.receiveMassage("Your TeamMates are : " + gf.getUserName() + " and " + dl.getUserName());
-        dl.receiveMassage("Your TeamMates are : " + gf.getUserName() + " and " + sm.getUserName());
+        if (sm != null) {
+            sm.receiveMassage("Your TeamMates are : " + gf.getUserName() + " and " + dl.getUserName());
+        }
+        if (dl != null) {
+            dl.receiveMassage("Your TeamMates are : " + gf.getUserName() + " and " + sm.getUserName());
+        }
     }
     public void introNight(){
         server.sendMassageToPlayers("Intro Night Started");
@@ -60,7 +71,7 @@ public class GameManager {
 
     private String getSimpleMafiaOpinion(){
         PlayerOnServer simpleMafia = game.getPlayerThread("SimpleMafia");
-        if (!simpleMafia.alive()) {
+        if (!simpleMafia.alive() || simpleMafia == null) {
             return "NoBody";
         }
         String opinion = simpleMafia.opinion();
@@ -68,7 +79,7 @@ public class GameManager {
     }
     private String getDoctorLectorOpinion(){
         PlayerOnServer doctorLector = game.getPlayerThread("DoctorLector");
-        if (!doctorLector.alive()) {
+        if (!doctorLector.alive() || doctorLector == null) {
             return "NoBody";
         }
         String opinion = doctorLector.opinion();
@@ -85,7 +96,7 @@ public class GameManager {
     private String doctorLectorAction(){
         server.sendMassageToPlayers(NightMassages.doctorLectorWakeUp);
         PlayerOnServer doctorLector = game.getPlayerThread("DoctorLector");
-        if (!doctorLector.alive()){
+        if (!doctorLector.alive() || doctorLector == null){
             server.sendMassageToPlayers(NightMassages.doctorLectorSleep);
             return "NoBody";
         }
@@ -127,7 +138,7 @@ public class GameManager {
     private String professionalAction(){
         server.sendMassageToPlayers(NightMassages.proWakeUp);
         PlayerOnServer professional = game.getPlayerThread("Professional");
-        if (!professional.alive()) {
+        if (!professional.alive() || professional == null) {
             server.sendMassageToPlayers(NightMassages.proSleep);
             return "NoBody";
         }
@@ -154,7 +165,7 @@ public class GameManager {
     private String ironSideAction(){
         server.sendMassageToPlayers(NightMassages.ironSideWakeUp);
         PlayerOnServer ironSide = game.getPlayerThread("IronSide");
-        if (!ironSide.alive()){
+        if (!ironSide.alive()|| ironSide == null){
             server.sendMassageToPlayers(NightMassages.ironSideSleep);
             return "No";
         }
@@ -178,27 +189,27 @@ public class GameManager {
         PlayerOnServer gf = game.getPlayerThread("GodFather");
 
         String simpleMafiaOpinion = "",doctorLectorOpinion = "";
-        if (sm.alive()){
+        if (sm.alive() && sm != null){
             simpleMafiaOpinion = getSimpleMafiaOpinion();
         }
 
         if (!gf.alive()){
-            if (dl.alive()){
-                if (sm.alive()) {
+            if (dl.alive() && sm != null){
+                if (sm.alive() && sm != null) {
                     dl.receiveMassage(sm.getUserName() + " says kill " + simpleMafiaOpinion);
                 }
 
                 return getDoctorLectorOpinion();
             }
-            if (!dl.alive()){
+            if (!dl.alive() || dl == null){
                 return simpleMafiaOpinion;
             }
         } else {
-            if (sm.alive()){
+            if (sm.alive() && sm != null){
                 simpleMafiaOpinion = getSimpleMafiaOpinion();
             }
 
-            if (dl.alive()){
+            if (dl.alive() && dl != null){
                 doctorLectorOpinion = getDoctorLectorOpinion();
             }
             sendMassagesToMafias(simpleMafiaOpinion,doctorLectorOpinion);
@@ -210,10 +221,10 @@ public class GameManager {
         PlayerOnServer sm = game.getPlayerThread("SimpleMafia");
         PlayerOnServer dl = game.getPlayerThread("DoctorLector");
         PlayerOnServer gf = game.getPlayerThread("GodFather");
-        if (sm.alive()){
+        if (sm.alive() && sm != null){
             sm.receiveMassage(massages[1]);
         }
-        if (dl.alive()){
+        if (dl.alive() && sm != null){
             dl.receiveMassage(massages[0]);
         }
         if (gf.alive()){
