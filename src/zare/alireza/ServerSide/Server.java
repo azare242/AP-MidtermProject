@@ -148,6 +148,7 @@ public class Server {
     }
     public void startVoting(){
         for (PlayerOnServer player : threads){
+            if (player.alive() && player.isOnGame())
             player.voting();
         }
     }

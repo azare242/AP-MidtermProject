@@ -265,12 +265,16 @@ public class GameManager {
     }
     private void killsOrSavesHandle(String[] actions){
         kill(actions[0]);
-        kill(actions[3]);
-        save(actions[1]);
-        save(actions[2]);
-        if (actions[1].equals(actions[3])){
-            save(actions[3]);
+
+        if (actions[3].equals(actions[2])){
+            actions[2] = "NoBody";
         }
+
+        kill(actions[3]);
+
+        save(actions[1]);
+        save(actions[3]);
+
     }
     private void handleNightEvents(String... actions){
         String events = "";
@@ -281,7 +285,7 @@ public class GameManager {
             server.playerDeadMenu(actions[0]);
         }
 
-        if (!server.isPlayerAlive(actions[3])){
+        if (!server.isPlayerAlive(actions[3]) && !actions[3].equals("NoBody")){
             events += "We Lost " + actions[3];
             server.playerDeadMenu(actions[0]);
         }
@@ -333,6 +337,14 @@ public class GameManager {
         game.silent(userName);
     }
     public void checkVotes() {
+        server.sendMassageToPlayers("We Are Waiting for Mayor Agreement...");
+        PlayerOnServer mayor = game.getPlayerThread("Mayor");
+        String MAYORAction = mayor.action();
+        if (MAYORAction.equals("1")) {
+            server.sendMassageToPlayers("No One Executed");
+            clearVotes();
+            startGame();
+        }
         if (!checkTheVotesAreRegular() || noOneHasMaxVotes()) {
             server.sendMassageToPlayers("No One Executed");
             clearVotes();
@@ -352,19 +364,10 @@ public class GameManager {
     }
 
     private void execute(String userName) {
-        PlayerOnServer mayor = game.getPlayerThread("Mayor");
-        String MAYORAction = mayor.action();
-        if (MAYORAction.equals("1")) {
-            server.sendMassageToPlayers("No One Executed");
-            clearVotes();
-            startGame();
-        } else {
-
-            executePlayer(userName);
-            server.sendMassageToPlayers(userName + " has been executed , ask his role from iron side :D");
-            clearVotes();
-            startGame();
-        }
+        executePlayer(userName);
+        server.sendMassageToPlayers(userName + " has been executed , ask his role from iron side :D");
+        clearVotes();
+        startGame();
     }
 
 
