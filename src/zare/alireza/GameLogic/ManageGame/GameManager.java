@@ -21,7 +21,7 @@ public class GameManager {
 
     private void initVotesHashMap(){
         votes = new HashMap<>();
-        for (int i = 0 ; i < 10 ; i++){
+        for (int i = 0 ; i < server.getCapacity() ; i++){
             votes.put(game.getUserName(i),0);
         }
         votes.put("NoOne",0);
@@ -282,7 +282,7 @@ public class GameManager {
     }
     public boolean checkTheVotesAreRegular(){
         int playersWithMaxVote = 0;
-        for (int i = 0 ; i < 10 ; i++){
+        for (int i = 0 ; i < server.getCapacity() ; i++){
             String userName = game.getUserName(i);
             if (votes.get(userName).equals(maxVote())){
                 playersWithMaxVote++;
@@ -308,7 +308,7 @@ public class GameManager {
             server.setVote("No One Executed");
             clearVotes();
         } else {
-            for (int i = 0; i < 10; ++i) {
+            for (int i = 0; i < server.getCapacity(); ++i) {
                 String userName = game.getUserName(i);
                 if (votes.get(userName).equals(maxVote())) {
                     execute(userName);

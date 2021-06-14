@@ -15,13 +15,13 @@ public class Game {
     private int citizens;
 
 
-    public Game(HashMap<String, PlayerOnServer> playerThreadHashMap, ArrayList<String> userNames, ArrayList<PlayerOnServer> threads) {
+    public Game(int capacity,HashMap<String, PlayerOnServer> playerThreadHashMap, ArrayList<String> userNames, ArrayList<PlayerOnServer> threads) {
         this.playerThreadHashMap = playerThreadHashMap;
         this.userNames = userNames;
         this.threads = threads;
 
-        mafias = 3;
-        citizens = 7;
+        mafias = capacity / 3;
+        citizens = capacity - mafias;
     }
 
     public PlayerOnServer getPlayerThread(String roleName) {

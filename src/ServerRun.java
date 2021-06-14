@@ -24,13 +24,13 @@ public class ServerRun {
                     while (true) {
                         String port = scanner.next();
                         if (portIsValid(port)) {
-                            new Server(Integer.parseInt(port)).serverStart();
+                            new Server(Integer.parseInt(port),playersCount).serverStart();
                             return;
                         } else System.out.println("Invalid port");
                     }
                 }
                 case "2" -> {
-                    System.out.println("Enter Player Count: [minimum is 6]: ");
+                    System.out.println("Enter Player Count: [minimum is 10]: ");
 
                     while (true) {
                         int count = scanner.nextInt();

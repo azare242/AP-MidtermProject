@@ -17,17 +17,22 @@ public class Server {
     private ArrayList<PlayerOnServer> threads;
     private int playersReady = 0;
     private int votedPlayers = 0;
+    private int capacity;
     private GameManager gameManager;
-    public Server(int port){
+    public Server(int port,int capacity){
+        this.capacity = capacity;
         try {
             serverSocket = new ServerSocket(port);
         } catch (IOException e) {
             System.out.println("EXCEPTION CAUGHT: " + e.getMessage());
         }
-        rolesForGiveToPlayers = RolesList.get();
+        rolesForGiveToPlayers = RolesList.get(capacity);
         rolesForGame = new HashMap<>();
         userNames = new ArrayList<>();
         threads = new ArrayList<>();
+    }
+    public int getCapacity(){
+        return capacity;
     }
     public synchronized void addUserName(String userName){
         userNames.add(userName);
@@ -52,10 +57,10 @@ public class Server {
         rolesForGame.put(role.getClass().getSimpleName(),pt);
     }
     public synchronized boolean allPlayersReady(){
-        return playersReady == 10;
+        return playersReady == capacity;
     }
     public synchronized void startGame(){
-        gameManager = new GameManager(this,new Game(rolesForGame,userNames,threads));
+        gameManager = new GameManager(this,new Game(capacity,rolesForGame,userNames,threads));
         gameManager.introNight();
         gameManager.discussion();
     }
@@ -70,7 +75,7 @@ public class Server {
 
             try {
                 Socket socket = serverSocket.accept();
-                if (clientsConnectedCounter == 10){
+                if (clientsConnectedCounter == capacity){
                     DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
                     dataOutputStream.writeUTF("game_is_full");
                 }
@@ -133,7 +138,7 @@ public class Server {
         votedPlayers++;
     }
     public boolean allPlayersVoted(){
-        return votedPlayers == 10;
+        return votedPlayers == capacity;
     }
     public void checkVotes(){
         gameManager.checkVotes();
