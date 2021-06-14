@@ -2,7 +2,7 @@ package zare.alireza.ClientSide;
 
 import zare.alireza.Roles.*;
 
-import javax.xml.crypto.Data;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -28,10 +28,7 @@ public class ClientProgram {
             showMainMenu();
             String chose = scanner.next();
             switch (chose){
-                case "1" -> {
-                    goToGame();
-                    return;
-                }
+                case "1" -> goToGame();
                 case "2" -> running = false;
                 default -> System.out.println("Invalid Input");
             }
@@ -68,7 +65,11 @@ public class ClientProgram {
         try {
             socket = new Socket("localhost", port);
         } catch (IOException e) {
-            e.printStackTrace();
+            if (e instanceof ConnectException){
+                System.out.println("there is no game at this port");
+            }
+            else
+                e.printStackTrace();
         }
         if (socket == null) {
             System.out.println("Something Went Wrong");

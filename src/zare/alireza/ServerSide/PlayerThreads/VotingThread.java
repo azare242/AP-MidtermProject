@@ -34,10 +34,10 @@ public class VotingThread extends Thread{
                 return;
             }
             int index = Integer.parseInt(chose);
-            if (index == 0) server.setVote("NoOne");
+            if (index == 0) server.setVote("NoOne",thisPlayer.getUserName());
             else {
                 vote = server.getPlayerUserName(index);
-                server.setVote(vote);
+                server.setVote(vote,thisPlayer.getUserName());
             }
             if (server.allPlayersVoted()){
                 server.checkVotes();

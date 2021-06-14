@@ -19,6 +19,7 @@ public class Server {
     private int votedPlayers = 0;
     private int capacity;
     private GameManager gameManager;
+    private String votes = "";
     public Server(int port,int capacity){
         this.capacity = capacity;
         try {
@@ -118,7 +119,8 @@ public class Server {
     }
     public void sendMassageToPlayers(String massage){
         for (PlayerOnServer ps : threads){
-            ps.receiveMassage(massage);
+            if (ps.isOnGame())
+                ps.receiveMassage(massage);
         }
     }
     public void getAlivePlayersListToAPlayer(PlayerOnServer p){
@@ -132,16 +134,29 @@ public class Server {
         }
         p.receiveMassage(list);
     }
-    public void setVote(String userName){
+    public void setVote(String userName,String voter){
         gameManager.setVote(userName);
+        votes += voter + " -> " + userName + '\n';
         votedPlayers++;
+    }
+    private String status(boolean isAlive){
+        if (isAlive) return "(ALIVE)";
+        else return "(DEAD)";
+    }
+    public void sendDayList(){
+        String massage = "Players : \n";
+        for (PlayerOnServer p : threads){
+            massage += p.getUserName() + " :: " + status(p.alive()) + '\n';
+        }
+        sendMassageToPlayers(massage);
     }
     public boolean allPlayersVoted(){
         return votedPlayers == capacity;
     }
     public void checkVotes(){
-        gameManager.checkVotes();
+        gameManager.checkVotes(votes);
         votedPlayers = 0;
+        votes = "";
     }
     public String getPlayerUserName(int index){
         return threads.get(index - 1).getUserName();

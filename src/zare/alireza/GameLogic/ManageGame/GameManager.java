@@ -67,6 +67,7 @@ public class GameManager {
         return chatHistory.get();
     }
     public void discussion(){
+        server.sendDayList();
         server.sendMassageToPlayers("It's time to discussion");
         game.startDiscussion();
     }
@@ -250,6 +251,7 @@ public class GameManager {
             gameStarted = true;
             return;
         }
+        server.sendMassageToPlayers(NightMassages.eveyOneSleep);
         String mafiaAction = mafiaTarget();
         server.sendMassageToPlayers(NightMassages.mafiaSleep);
         String doctorLectorAction = doctorLectorAction();
@@ -258,7 +260,7 @@ public class GameManager {
         String psychoAction = psychologistAction();
         String professionalAction = professionalAction();
         String ironSideAction = ironSideAction();
-        server.sendMassageToPlayers("EVERY ONE WAKE UP!");
+        server.sendMassageToPlayers(NightMassages.everyOneWakeUp);
         handleNightEvents(mafiaAction,doctorLectorAction,physicianAction,professionalAction);
         makeSilent(psychoAction);
         ironSideActionHandle(ironSideAction);
@@ -336,24 +338,29 @@ public class GameManager {
         if (userName.equalsIgnoreCase("NoBody")) return;
         game.silent(userName);
     }
-    public void checkVotes() {
+    public void checkVotes(String votesList) {
         server.sendMassageToPlayers("We Are Waiting for Mayor Agreement...");
         PlayerOnServer mayor = game.getPlayerThread("Mayor");
-        String MAYORAction = mayor.action();
+        String MAYORAction = "";
+        if (!mayor.alive()) MAYORAction = "0";
+        else MAYORAction = mayor.action();
         if (MAYORAction.equals("1")) {
             server.sendMassageToPlayers("No One Executed");
+            server.sendMassageToPlayers("VOTES : \n" + votesList);
             clearVotes();
             startGame();
         }
         if (!checkTheVotesAreRegular() || noOneHasMaxVotes()) {
             server.sendMassageToPlayers("No One Executed");
+            server.sendMassageToPlayers("VOTES : " + votesList);
             clearVotes();
             startGame();
         } else {
             for (int i = 0; i < server.getCapacity(); ++i) {
                 String userName = game.getUserName(i);
                 if (votes.get(userName).equals(maxVote())) {
-                    execute(userName);
+                    execute(userName,votesList);
+
                 }
             }
         }
@@ -363,9 +370,10 @@ public class GameManager {
         game.save(userName);
     }
 
-    private void execute(String userName) {
+    private void execute(String userName,String votesList) {
         executePlayer(userName);
         server.sendMassageToPlayers(userName + " has been executed , ask his role from iron side :D");
+        server.sendMassageToPlayers("VOTES : " + votesList);
         clearVotes();
         startGame();
     }

@@ -95,7 +95,7 @@ public  class PlayerOnServer extends Thread{
                 sender.writeUTF("username");
                 while (true){
                     String userName = receiver.readUTF();
-                    if (server.userNameIsValid(userName)){
+                    if (server.userNameIsValid(userName) && !userName.equalsIgnoreCase("NoBody")){
                         server.addUserName(userName);
                         sender.writeUTF("done");
                         this.userName  = userName;
@@ -234,6 +234,7 @@ public  class PlayerOnServer extends Thread{
        if (role.getClass().getSimpleName().equals("IronSide")){
            cankill = false;
        }
+        System.out.println(userName + " Role is " + role.getClass().getSimpleName());
     }
     public boolean isMayor(){
         return role.getClass().getSimpleName().equals("Mayor");
