@@ -30,11 +30,11 @@ public class ServerRun {
                     }
                 }
                 case "2" -> {
-                    System.out.println("Enter Player Count: [minimum is 10]: ");
+                    System.out.println("Enter Player Count: [maximum is 10]: ");
 
                     while (true) {
                         int count = scanner.nextInt();
-                        if (count >= 6) {
+                        if (count <= 10) {
                             playersCount = count;
                             break;
                         } else System.out.println("Invalid input try again");

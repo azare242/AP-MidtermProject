@@ -11,27 +11,68 @@ public class RolesList {
     private static ArrayList<Role> initialize(int capacity) {
         ArrayList<Role> result = new ArrayList<>();
 
-        if (capacity >= 10) {
+        if (capacity == 10) {
             result.add(new GodFather());
             result.add(new DoctorLector());
-            int simpleMafias = capacity / 3 - 2;
-            for (int i = 0; i < simpleMafias; ++i) {
-                result.add(new SimpleMafia());
-            }
+            result.add(new SimpleMafia());
             result.add(new Mayor());
             result.add(new Physician());
             result.add(new Psychologist());
             result.add(new Professional());
             result.add(new IronSide());
             result.add(new Detector());
-
-            int simpleCitizens = capacity - (capacity / 3) - 6;
-            for (int i = 0; i < simpleCitizens; i++) {
-                result.add(new SimpleCitizen());
-            }
+            result.add(new SimpleCitizen());
         }
+        else if (capacity == 9){
+            result.add(new GodFather());
+            result.add(new DoctorLector());
+            result.add(new SimpleMafia());
+            result.add(new Mayor());
+            result.add(new Physician());
+            result.add(new Psychologist());
+            result.add(new Professional());
+            result.add(new IronSide());
+            result.add(new Detector());
+        }
+        else if (capacity == 8){
+            result.add(new GodFather());
+            result.add(new DoctorLector());
+            result.add(new Mayor());
+            result.add(new Physician());
+            result.add(new Psychologist());
+            result.add(new Professional());
+            result.add(new IronSide());
+            result.add(new Detector());
+        }
+        else if (capacity == 7){
+            result.add(new GodFather());
+            result.add(new DoctorLector());
+            result.add(new Mayor());
+            result.add(new Physician());
+            result.add(new Psychologist());
+            result.add(new Professional());
+            result.add(new Detector());
+        }
+        else if (capacity == 6){
+            result.add(new GodFather());
+            result.add(new DoctorLector());
+            result.add(new Mayor());
+            result.add(new Physician());
+            result.add(new Psychologist());
+            result.add(new Detector());
+        }
+        else if (capacity == 5){
+            result.add(new GodFather());
+            result.add(new Mayor());
+            result.add(new Physician());
+            result.add(new Psychologist());
+            result.add(new Detector());
+        }
+
+        Collections.shuffle(result);
         return result;
     }
+
 
     public static ArrayList<Role> get(int capacity) {
         return initialize(capacity);
