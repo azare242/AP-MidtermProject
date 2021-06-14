@@ -29,7 +29,10 @@ public class VotingThread extends Thread{
             server.getAlivePlayersListToAPlayer(thisPlayer);
 
             String chose = receiver.readUTF();
-
+            if (chose.equalsIgnoreCase("exit")){
+                thisPlayer.leaveGame();;
+                return;
+            }
             int index = Integer.parseInt(chose);
             if (index == 0) server.setVote("NoOne");
             else {

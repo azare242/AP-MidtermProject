@@ -32,6 +32,21 @@ public  class PlayerOnServer extends Thread{
        this.socket = socket;
    }
 
+    public void leaveGame(){
+        try {
+
+            isAlive = false;
+            onGame = false;
+            String massageToSend = "\"" + userName + "\" : " + "i quit the match";
+
+            server.aPlayerSendsMassageToOtherPlayers(massageToSend, this);
+            sender.close();
+            receiver.close();
+            socket.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
 
     public void deadMenu(){
         try {
@@ -148,14 +163,7 @@ public  class PlayerOnServer extends Thread{
                    break;
                }
                else if (massage.equalsIgnoreCase("exit")){
-                   isAlive = false;
-                   onGame = false;
-                   String massageToSend =  "\"" + userName + "\" : " + "i quit the match";
-
-                   server.aPlayerSendsMassageToOtherPlayers(massageToSend,this);
-                   sender.close();
-                   receiver.close();
-                   socket.close();
+                   leaveGame();
                    break;
                }
                else {

@@ -108,8 +108,8 @@ public class ClientProgram {
                         action(receiver,sender);
                         break;
                     case "chat_time":
-                        boolean flee = chatting(sender,receiver);
-                        if (flee){
+                        boolean flee1 = chatting(sender,receiver);
+                        if (flee1){
                             System.out.println("You Exited The Game NOOB");
                             receiver.close();
                             sender.close();
@@ -118,7 +118,14 @@ public class ClientProgram {
                         }
                         break;
                     case "voting":
-                        voting(sender,receiver);
+                        boolean flee2 = voting(sender,receiver);
+                        if (flee2){
+                            System.out.println("You Exited The Game NOOB");
+                            receiver.close();
+                            sender.close();
+                            socket.close();
+                            return;
+                        }
                         break;
                     case "you_dead":
                         boolean exited = deathCam(sender);
@@ -256,7 +263,7 @@ public class ClientProgram {
             e.printStackTrace();
         }
     }
-    private void voting(DataOutputStream dataOutputStream,DataInputStream dataInputStream){
+    private boolean voting(DataOutputStream dataOutputStream,DataInputStream dataInputStream){
 
         try {
             System.out.println("Voting Time [for vote to noOne enter 0]");
@@ -266,13 +273,18 @@ public class ClientProgram {
                 String chose = scanner.next();
                 if (indexIsValid(chose,list) || chose.equals("0")){
                     dataOutputStream.writeUTF(chose);
-                    break;
+                    return false;
                 }
-                else System.out.println("invalid input , try again");
+                else if (chose.equalsIgnoreCase("Exit")){
+                    dataOutputStream.writeUTF("exit");
+                    return true;
+                }
+                else System.out.println("invalid input try again");
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return false;
     }
     private boolean deathCam(DataOutputStream dataOutputStream){
         System.out.println("Do You Want Watch Resume the game? [1 - > yes / 2 - > No]");
