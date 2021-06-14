@@ -38,6 +38,7 @@ public class Game {
 
     public void startDiscussion(){
         for (PlayerOnServer player : threads){
+            if (player.isOnGame() && player.alive())
             player.chat();
         }
     }
