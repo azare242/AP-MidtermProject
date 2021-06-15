@@ -306,6 +306,7 @@ public class Server {
                 list.add(player.getRoleName());
             }
         }
+        if (list.size() == 0) return "EVERY ONE IS ALIVE";
         return shuffledStringOfOutRoles(list);
     }
 
@@ -384,12 +385,12 @@ public class Server {
             threads = null;
             rolesForGame = null;
             userNames = null;
-            System.exit(0);
         }
         try {
             serverSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.exit(0);
     }
 }

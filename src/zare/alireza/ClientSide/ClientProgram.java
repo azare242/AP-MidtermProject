@@ -89,7 +89,7 @@ public class ClientProgram {
     }
     private void waitingForServer(){
         System.out.println(
-                "**************\nWaiting For Server...\n**************"
+                "..."
         );
     }
     private void listeningToServer(Socket socket){

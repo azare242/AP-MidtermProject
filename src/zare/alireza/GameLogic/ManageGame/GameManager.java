@@ -77,9 +77,12 @@ public class GameManager {
      */
     public void introNight(){
         server.sendMassageToPlayers("Intro Night Started");
+        sleep();
         sendMassageMafias();
         sendMassageToMayor();
+        sleep();
         server.sendMassageToPlayers("Intro Night Ended");
+        sleep();
     }
 
     /**
@@ -175,6 +178,7 @@ public class GameManager {
             return;
         }
         String action = detector.action();
+        sleep();
         investigation(action,detector);
         server.sendMassageToPlayers(NightMassages.detectorSleep);
     }
@@ -199,6 +203,7 @@ public class GameManager {
             return "NoBody";
         }
         String action = professional.action();
+        if (action.equalsIgnoreCase("NoBody")) return "NoBody";
         server.sendMassageToPlayers(NightMassages.proSleep);
         if (proKill(action)){
             action = action;
@@ -342,6 +347,7 @@ public class GameManager {
         }
 
         if (!server.isPlayerAlive(actions[3]) && !actions[3].equals("NoBody")){
+            if (events.length() != 0) events += " and " ;
             events += "We Lost " + actions[3];
         }
 
@@ -410,7 +416,7 @@ public class GameManager {
     }
     private boolean noOneHasMaxVotes(){
         Integer noOneVotes = votes.get("NoOne");
-        return noOneVotes.equals(maxVote()) || noOneVotes >= 5;
+        return noOneVotes.equals(maxVote()) || noOneVotes >= server.getCapacity() / 2;
     }
     private void makeSilent(String userName){
         if (userName.equalsIgnoreCase("NoBody")) return;
@@ -450,9 +456,6 @@ public class GameManager {
             }
         }
 
-    }
-    private void save(String userName) {
-        game.save(userName);
     }
 
     private void execute(String userName,String votesList) {

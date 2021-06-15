@@ -16,13 +16,20 @@ public class ServerRun {
         return true;
     }
     private static int playersCount = 10;
+    private static void welcome(){
 
+        System.out.println(
+                "HELLO , WELCOME TO SERVER APPLICATION FOR MAFIA GAME BY Alireza Zare Zeynabadi\n" +
+                        "players count by default is 10\n"
+        );
+    }
     /**
      * The entry point of application.
      *
      * @param args the input arguments
      */
     public static void main(String[] args) {
+        welcome();
         Scanner scanner = new Scanner(System.in);
         while (true){
             System.out.println("1/Start New Game\n2/Set Players Count\n3/Exit");

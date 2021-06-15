@@ -18,8 +18,8 @@ public class Professional extends Citizen{
     public int action(String list, Scanner scanner) {
         int result;
         System.out.println(list);
+        System.out.println("(0) - Not To Shot");
         System.out.println("well, WHO?");
-        System.out.println("0 for nobody");
         while (true){
             String index = scanner.next();
             if (list.contains("(" + index + ")") || index.equals("0")){

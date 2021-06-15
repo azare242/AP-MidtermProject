@@ -123,12 +123,6 @@ public  class PlayerOnServer extends Thread{
         this.isAlive = false;
     }
 
-    /**
-     * Saved.
-     */
-    public void saved() {
-       this.isAlive = true;
-    }
 
     /**
      * Gets user name.
