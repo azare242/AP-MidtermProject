@@ -324,16 +324,13 @@ public class GameManager {
         ironSideActionHandle(ironSideAction);
     }
     private void killsOrSavesHandle(String[] actions){
-        kill(actions[0]);
-
-        if (actions[3].equals(actions[2])){
-            actions[2] = "NoBody";
+        if (!actions[0].equals(actions[2])){
+            kill(actions[0]);
         }
 
-        kill(actions[3]);
-
-        save(actions[1]);
-        save(actions[2]);
+        if (!actions[1].equals(actions[3]) && !actions[3].equals("NoBody")){
+            kill(actions[3]);
+        }
 
     }
     private void handleNightEvents(String... actions){

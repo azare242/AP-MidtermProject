@@ -47,7 +47,6 @@ public  class PlayerOnServer extends Thread{
      * Leave game.
      */
     public void leaveGame(){
-        server.aPlayerKilled();
         try {
 
             isAlive = false;
@@ -228,6 +227,7 @@ public  class PlayerOnServer extends Thread{
                    break;
                }
                else if (massage.equalsIgnoreCase("exit")){
+                   server.aPlayerKilled();
                    leaveGame();
                    break;
                }
