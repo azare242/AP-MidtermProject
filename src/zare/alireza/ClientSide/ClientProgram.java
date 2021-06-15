@@ -216,9 +216,14 @@ public class ClientProgram {
     private boolean chatting(DataOutputStream dataOutputStream,DataInputStream dataInputStream){
         System.out.println("Your Turn to chat: ");
         String garbage = scanner.nextLine();
+        int massages = 0;
         while (true){
             try {
-                System.out.print("Send Massage: [at end enter \"done\"] : ");
+                if (massages == 3){
+                    dataOutputStream.writeUTF("done");
+                    break;
+                }
+                System.out.print("Send Massage: [( 3 massage maximum )at end enter \"done\"] : ");
                 String massage = scanner.nextLine();
                 if (massage.equalsIgnoreCase("HISTORY")){
                     dataOutputStream.writeUTF("HISTORY");
@@ -233,7 +238,10 @@ public class ClientProgram {
                     dataOutputStream.writeUTF("done");
                     break;
                 }
-                else dataOutputStream.writeUTF(massage);
+                else {
+                    dataOutputStream.writeUTF(massage);
+                    massages++;
+                }
             }catch (IOException e){
                 e.printStackTrace();
             }
