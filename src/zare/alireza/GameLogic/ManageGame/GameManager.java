@@ -309,27 +309,34 @@ public class GameManager {
         kill(actions[3]);
 
         save(actions[1]);
-        save(actions[3]);
+        save(actions[2]);
 
     }
     private void handleNightEvents(String... actions){
         String events = "";
         killsOrSavesHandle(actions);
 
-        if (!server.isPlayerAlive(actions[0])){
-            events += "We Lost " + actions[0];
-            server.playerDeadMenu(actions[0]);
+        if (!server.isPlayerAlive(actions[0]) && !actions[0].equals("NoBody")){
+            events += "We Lost " + actions[0] +'\n';
         }
 
         if (!server.isPlayerAlive(actions[3]) && !actions[3].equals("NoBody")){
             events += "We Lost " + actions[3];
-            server.playerDeadMenu(actions[0]);
         }
 
         if (events.length() == 0){
             events += "Last Night is a good night";
         }
         server.sendMassageToPlayers(events);
+        playerDeadMenus(actions[0],actions[3]);
+    }
+    private void playerDeadMenus(String... actions){
+        if (!server.isPlayerAlive(actions[0]) && !actions[0].equals("NoBody")){
+            server.playerDeadMenu(actions[0]);
+        }
+        if (!server.isPlayerAlive(actions[1]) && !actions[1].equals("NoBody")){
+            server.playerDeadMenu(actions[1]);
+        }
     }
     private void kill(String userName){
         game.kill(userName);
@@ -343,7 +350,7 @@ public class GameManager {
     }
     private void executePlayer(String userName){
         game.execute(userName);
-        server.playerDeadMenu(userName);
+
     }
 
     /**
@@ -432,6 +439,7 @@ public class GameManager {
         server.sendMassageToPlayers(userName + " has been executed , ask his role from iron side :D");
         server.sendMassageToPlayers("VOTES : " + votesList);
         clearVotes();
+        server.playerDeadMenu(userName);
         startGame();
     }
 

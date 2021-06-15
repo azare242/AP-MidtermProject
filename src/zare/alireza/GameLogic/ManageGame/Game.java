@@ -122,6 +122,7 @@ public class Game {
      * @param userName the user name
      */
     public void save(String userName){
+        if (userName.equalsIgnoreCase("NoBody")) return;
         for (PlayerOnServer player : threads){
             if (player.getUserName().equals(userName)){
                 player.saved();
