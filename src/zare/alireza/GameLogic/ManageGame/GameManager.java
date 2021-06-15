@@ -337,6 +337,7 @@ public class GameManager {
     private void makeSilent(String userName){
         if (userName.equalsIgnoreCase("NoBody")) return;
         game.silent(userName);
+        server.sendMassageToPlayers(userName + " is silenced by psychologist");
     }
     public void checkVotes(String votesList) {
         server.sendMassageToPlayers("We Are Waiting for Mayor Agreement...");
@@ -392,6 +393,10 @@ public class GameManager {
     }
     private void scoreBoard(){
 
-        System.out.println("Game Is Over");
+        String scoreBoard = game.scoreBoard();
+
+        server.sendMassageToPlayers(scoreBoard);
+        server.sendMassageToPlayers("end");
+        server.endGame();
     }
 }

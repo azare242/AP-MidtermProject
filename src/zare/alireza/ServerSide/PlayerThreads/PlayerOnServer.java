@@ -48,6 +48,15 @@ public  class PlayerOnServer extends Thread{
         }
     }
 
+    public void endGame(){
+       try {
+           sender.close();
+           receiver.close();
+           socket.close();
+       } catch (IOException e) {
+           e.printStackTrace();
+       }
+    }
     public void deadMenu(){
         try {
             sender.writeUTF("you_dead");

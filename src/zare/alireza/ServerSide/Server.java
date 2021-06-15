@@ -106,17 +106,6 @@ public class Server {
             }
         }
     }
-    public void checkPlayersOnGame(){
-        ArrayList<PlayerOnServer> checked = new ArrayList<>();
-        for (PlayerOnServer player : threads){
-            if (!player.isOnGame()){
-                checked.add(player);
-            }
-        }
-        for (PlayerOnServer player : checked){
-            threads.remove(player);
-        }
-    }
     public void sendMassageToPlayers(String massage){
         for (PlayerOnServer ps : threads){
             if (ps.isOnGame())
@@ -219,5 +208,23 @@ public class Server {
             }
         }
     }
-
+    public void endGame(){
+        for (PlayerOnServer p : threads){
+            if (p.isOnGame()){
+                p.endGame();
+            }
+            threads.clear();
+            rolesForGame.clear();
+            userNames.clear();
+            threads = null;
+            rolesForGame = null;
+            userNames = null;
+            System.exit(0);
+        }
+        try {
+            serverSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

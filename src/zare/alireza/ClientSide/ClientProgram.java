@@ -138,6 +138,12 @@ public class ClientProgram {
                             return;
                         }
                         break;
+                    case "end":
+                        System.out.println("GAME IS OVER");
+                        receiver.close();
+                        sender.close();
+                        socket.close();
+                        return;
                     default:
                         System.out.println(serverMassage);
                         break;

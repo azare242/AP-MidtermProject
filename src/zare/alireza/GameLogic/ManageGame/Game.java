@@ -20,10 +20,34 @@ public class Game {
         this.userNames = userNames;
         this.threads = threads;
 
-        mafias = capacity / 3;
-        citizens = capacity - mafias;
+        setTeamCounts(capacity);
     }
-
+    private void setTeamCounts(int capacity){
+        if (capacity == 10) {
+            mafias = 3;
+            citizens = 7;
+        }
+        else if (capacity == 9){
+            mafias = 3;
+            citizens = 6;
+        }
+        else if (capacity == 8){
+            mafias = 2;
+            citizens = 6;
+        }
+        else if (capacity == 7){
+            mafias = 2;
+            citizens = 5;
+        }
+        else if (capacity == 6){
+            mafias = 2;
+            citizens = 4;
+        }
+        else if (capacity == 5){
+            mafias = 1;
+            citizens = 4;
+        }
+    }
     public PlayerOnServer getPlayerThread(String roleName) {
         return playerThreadHashMap.get(roleName);
     }
@@ -91,5 +115,19 @@ public class Game {
                 else citizens--;
             }
         }
+    }
+    private String status(String winnerTeam,boolean team){
+        if (winnerTeam.equalsIgnoreCase("Mafias") && team) return "WINNER";
+        else if (winnerTeam.equalsIgnoreCase("Citizens") && !team) return "WINNER";
+        else return "LOSER";
+    }
+    public String scoreBoard(){
+        String sb = "THE SCORE BOARD: \n";
+        String winnerTeam = mafiaWins() ? "Mafias" : "Citizens";
+        sb += "WINNER TEAM IS : " + winnerTeam + '\n';
+        for (PlayerOnServer player : threads){
+            sb += player.getUserName() + " -> " + status(winnerTeam, player.isMafia()) + '\n';
+        }
+        return sb;
     }
 }
