@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
+/**
+ * The type Roles list.
+ */
 public class RolesList {
 
 
@@ -74,6 +77,12 @@ public class RolesList {
     }
 
 
+    /**
+     * Get array list.
+     *
+     * @param capacity the capacity
+     * @return the array list
+     */
     public static ArrayList<Role> get(int capacity) {
         return initialize(capacity);
     }

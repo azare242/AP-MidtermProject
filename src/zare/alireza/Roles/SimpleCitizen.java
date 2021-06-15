@@ -2,8 +2,14 @@ package zare.alireza.Roles;
 
 import java.util.Scanner;
 
+/**
+ * The type Simple citizen.
+ */
 public class SimpleCitizen extends Citizen{
 
+    /**
+     * Instantiates a new Simple citizen.
+     */
     public SimpleCitizen(){
         super();
         information = "let's help to find mafias and take them out";

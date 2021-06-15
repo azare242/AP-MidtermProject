@@ -6,6 +6,9 @@ import zare.alireza.ServerSide.PlayerThreads.PlayerOnServer;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * The type Game.
+ */
 public class Game {
 
     private HashMap<String, PlayerOnServer> playerThreadHashMap;
@@ -15,6 +18,14 @@ public class Game {
     private int citizens;
 
 
+    /**
+     * Instantiates a new Game.
+     *
+     * @param capacity            the capacity
+     * @param playerThreadHashMap the player thread hash map
+     * @param userNames           the user names
+     * @param threads             the threads
+     */
     public Game(int capacity,HashMap<String, PlayerOnServer> playerThreadHashMap, ArrayList<String> userNames, ArrayList<PlayerOnServer> threads) {
         this.playerThreadHashMap = playerThreadHashMap;
         this.userNames = userNames;
@@ -48,18 +59,38 @@ public class Game {
             citizens = 4;
         }
     }
+
+    /**
+     * Gets player thread.
+     *
+     * @param roleName the role name
+     * @return the player thread
+     */
     public PlayerOnServer getPlayerThread(String roleName) {
         return playerThreadHashMap.get(roleName);
     }
 
+    /**
+     * Mafia wins boolean.
+     *
+     * @return the boolean
+     */
     public boolean mafiaWins(){
         return mafias == citizens && mafias != 0;
     }
 
+    /**
+     * Citizens wins boolean.
+     *
+     * @return the boolean
+     */
     public boolean citizensWins(){
         return mafias == 0 && citizens != 0;
     }
 
+    /**
+     * Start discussion.
+     */
     public void startDiscussion(){
         for (PlayerOnServer player : threads){
             if (player.isOnGame() && player.alive())
@@ -67,6 +98,11 @@ public class Game {
         }
     }
 
+    /**
+     * Kill.
+     *
+     * @param userName the user name
+     */
     public void kill(String userName){
         for (PlayerOnServer player : threads){
             if (player.getUserName().equals(userName)){
@@ -79,6 +115,12 @@ public class Game {
             }
         }
     }
+
+    /**
+     * Save.
+     *
+     * @param userName the user name
+     */
     public void save(String userName){
         for (PlayerOnServer player : threads){
             if (player.getUserName().equals(userName)){
@@ -86,6 +128,13 @@ public class Game {
             }
         }
     }
+
+    /**
+     * Check pro kill boolean.
+     *
+     * @param userName the user name
+     * @return the boolean
+     */
     public boolean checkProKill(String userName){
 
         for (PlayerOnServer player : threads){
@@ -95,6 +144,12 @@ public class Game {
         }
         return false;
     }
+
+    /**
+     * Silent.
+     *
+     * @param userName the user name
+     */
     public void silent(String userName){
         for (PlayerOnServer player : threads){
             if (player.getUserName().equals(userName)){
@@ -102,9 +157,22 @@ public class Game {
             }
         }
     }
+
+    /**
+     * Get user name string.
+     *
+     * @param index the index
+     * @return the string
+     */
     public String getUserName(int index){
         return userNames.get(index);
     }
+
+    /**
+     * Execute.
+     *
+     * @param userName the user name
+     */
     public void execute(String userName){
         for (PlayerOnServer player : threads){
             if (player.getUserName().equals(userName)){
@@ -121,6 +189,12 @@ public class Game {
         else if (winnerTeam.equalsIgnoreCase("Citizens") && !team) return "WINNER";
         else return "LOSER";
     }
+
+    /**
+     * Score board string.
+     *
+     * @return the string
+     */
     public String scoreBoard(){
         String sb = "THE SCORE BOARD: \n";
         String winnerTeam = mafiaWins() ? "Mafias" : "Citizens";

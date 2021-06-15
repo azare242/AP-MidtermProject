@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.net.Socket;
 
 
+/**
+ * The type Player on server.
+ */
 public  class PlayerOnServer extends Thread{
 
     private Role role;
@@ -24,7 +27,15 @@ public  class PlayerOnServer extends Thread{
     private Server server;
     private Socket socket;
 
-   public PlayerOnServer(Server server,DataOutputStream dataOutputStream,DataInputStream dataInputStream,Socket socket){
+    /**
+     * Instantiates a new Player on server.
+     *
+     * @param server           the server
+     * @param dataOutputStream the data output stream
+     * @param dataInputStream  the data input stream
+     * @param socket           the socket
+     */
+    public PlayerOnServer(Server server,DataOutputStream dataOutputStream,DataInputStream dataInputStream,Socket socket){
        this.server = server;
 
        receiver = dataInputStream;
@@ -32,6 +43,9 @@ public  class PlayerOnServer extends Thread{
        this.socket = socket;
    }
 
+    /**
+     * Leave game.
+     */
     public void leaveGame(){
         try {
 
@@ -48,6 +62,9 @@ public  class PlayerOnServer extends Thread{
         }
     }
 
+    /**
+     * End game.
+     */
     public void endGame(){
        try {
            sender.close();
@@ -57,6 +74,10 @@ public  class PlayerOnServer extends Thread{
            e.printStackTrace();
        }
     }
+
+    /**
+     * Dead menu.
+     */
     public void deadMenu(){
         try {
             sender.writeUTF("you_dead");
@@ -75,12 +96,24 @@ public  class PlayerOnServer extends Thread{
             e.printStackTrace();
         }
     }
-   public void silent(){
+
+    /**
+     * Silent.
+     */
+    public void silent(){
        canTalk = false;
    }
-   public void execute(){
+
+    /**
+     * Execute.
+     */
+    public void execute(){
        this.isAlive = false;
    }
+
+    /**
+     * Kill.
+     */
     public void kill(){
        if (!cankill){
            cankill = true;
@@ -88,10 +121,19 @@ public  class PlayerOnServer extends Thread{
        }
         this.isAlive = false;
     }
+
+    /**
+     * Saved.
+     */
     public void saved() {
        this.isAlive = true;
     }
 
+    /**
+     * Gets user name.
+     *
+     * @return the user name
+     */
     public String getUserName() {
         return userName;
     }
@@ -141,6 +183,11 @@ public  class PlayerOnServer extends Thread{
        }
     }
 
+    /**
+     * Receive massage.
+     *
+     * @param massage the massage
+     */
     public void receiveMassage(String massage){
         try {
             sender.writeUTF(massage);
@@ -150,9 +197,16 @@ public  class PlayerOnServer extends Thread{
     }
 
 
+    /**
+     * Voting.
+     */
     public void voting(){
        new VotingThread(this,server,sender,receiver).start();
     }
+
+    /**
+     * Chat.
+     */
     public void chat(){
        try {
            if (!canTalk){
@@ -186,6 +240,12 @@ public  class PlayerOnServer extends Thread{
            e.printStackTrace();
        }
     }
+
+    /**
+     * Action string.
+     *
+     * @return the string
+     */
     public String action() {
 
         String action = "";
@@ -225,6 +285,12 @@ public  class PlayerOnServer extends Thread{
         }
         return action;
     }
+
+    /**
+     * Opinion string.
+     *
+     * @return the string
+     */
     public String opinion(){
         String opinion = "";
         try {
@@ -245,27 +311,75 @@ public  class PlayerOnServer extends Thread{
        }
         System.out.println(userName + " Role is " + role.getClass().getSimpleName());
     }
+
+    /**
+     * Is mayor boolean.
+     *
+     * @return the boolean
+     */
     public boolean isMayor(){
         return role.getClass().getSimpleName().equals("Mayor");
     }
+
+    /**
+     * Alive boolean.
+     *
+     * @return the boolean
+     */
     public boolean alive(){
         return isAlive;
     }
+
+    /**
+     * Is on game boolean.
+     *
+     * @return the boolean
+     */
     public boolean isOnGame(){
         return onGame;
     }
+
+    /**
+     * Is iron side boolean.
+     *
+     * @return the boolean
+     */
     public boolean isIronSide(){
         return this.role.getClass().getSimpleName().equals("IronSide");
     }
+
+    /**
+     * Investigation boolean.
+     *
+     * @return the boolean
+     */
     public boolean investigation(){
         return role.getInvestigation() == 'B';
     }
+
+    /**
+     * Is mafia boolean.
+     *
+     * @return the boolean
+     */
     public boolean isMafia(){
         return role instanceof Mafia;
     }
+
+    /**
+     * Is doctor lector boolean.
+     *
+     * @return the boolean
+     */
     public boolean isDoctorLector(){
         return role.getClass().getSimpleName().equals("DoctorLector");
     }
+
+    /**
+     * Get role name string.
+     *
+     * @return the string
+     */
     public String getRoleName(){
         return role.getClass().getSimpleName();
     }

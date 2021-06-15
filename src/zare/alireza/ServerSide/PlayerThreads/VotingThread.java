@@ -7,6 +7,9 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+/**
+ * The type Voting thread.
+ */
 public class VotingThread extends Thread{
 
     private Server server;
@@ -14,6 +17,14 @@ public class VotingThread extends Thread{
     private DataInputStream receiver;
     private PlayerOnServer thisPlayer;
 
+    /**
+     * Instantiates a new Voting thread.
+     *
+     * @param player           the player
+     * @param server           the server
+     * @param dataOutputStream the data output stream
+     * @param dataInputStream  the data input stream
+     */
     public VotingThread(PlayerOnServer player, Server server, DataOutputStream dataOutputStream, DataInputStream dataInputStream){
         this.server = server;
         sender = dataOutputStream;

@@ -2,8 +2,14 @@ package zare.alireza.Roles;
 
 import java.util.Scanner;
 
+/**
+ * The type Detector.
+ */
 public class Detector extends Citizen{
 
+    /**
+     * Instantiates a new Detector.
+     */
     public Detector(){
         super();
         information = "hello detector,you must ask god for investigations , if it's 'W' you give answer \uD83D\uDD93 else if it's 'B' you give answer \uD83D\uDD92 ";

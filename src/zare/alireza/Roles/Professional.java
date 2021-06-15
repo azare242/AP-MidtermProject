@@ -2,8 +2,14 @@ package zare.alireza.Roles;
 
 import java.util.Scanner;
 
+/**
+ * The type Professional.
+ */
 public class Professional extends Citizen{
 
+    /**
+     * Instantiates a new Professional.
+     */
     public Professional(){
         super();
         information = "You Can Shot at night , but be careful ; if you shot citizens you will die";

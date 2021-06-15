@@ -7,11 +7,17 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
+/**
+ * The type Client program.
+ */
 public class ClientProgram {
 
     private Scanner scanner;
     private Role role;
 
+    /**
+     * Instantiates a new Client program.
+     */
     public ClientProgram(){
         scanner = new Scanner(System.in);
     }
@@ -21,6 +27,10 @@ public class ClientProgram {
                 "‖1.Play\n‖2.Exit\n⮞ "
         );
     }
+
+    /**
+     * Run.
+     */
     public void run(){
         boolean running = true;
 

@@ -3,9 +3,16 @@ package zare.alireza.Roles;
 import javax.management.timer.TimerNotification;
 import java.util.Scanner;
 
+/**
+ * The type Physician.
+ */
 public class Physician extends Citizen{
 
     private boolean canSaveHimself = true;
+
+    /**
+     * Instantiates a new Physician.
+     */
     public Physician() {
         super();
         information =

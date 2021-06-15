@@ -2,8 +2,14 @@ package zare.alireza.Roles;
 
 import java.util.Scanner;
 
+/**
+ * The type God father.
+ */
 public class GodFather extends Mafia{
 
+    /**
+     * Instantiates a new God father.
+     */
     public GodFather(){
         super();
         information =

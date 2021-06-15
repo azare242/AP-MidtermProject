@@ -2,6 +2,9 @@ import zare.alireza.ServerSide.Server;
 
 import java.util.Scanner;
 
+/**
+ * The type Server run.
+ */
 public class ServerRun {
 
     private static boolean portIsValid(String port){
@@ -13,6 +16,12 @@ public class ServerRun {
         return true;
     }
     private static int playersCount = 10;
+
+    /**
+     * The entry point of application.
+     *
+     * @param args the input arguments
+     */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         while (true){

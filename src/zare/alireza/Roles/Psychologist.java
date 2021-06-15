@@ -2,8 +2,14 @@ package zare.alireza.Roles;
 
 import java.util.Scanner;
 
+/**
+ * The type Psychologist.
+ */
 public class Psychologist extends Citizen{
 
+    /**
+     * Instantiates a new Psychologist.
+     */
     public Psychologist(){
         super();
         information = "you can silent someone at night, he can't speak at day";

@@ -6,6 +6,9 @@ import zare.alireza.ServerSide.PlayerThreads.PlayerOnServer;
 import java.util.Collections;
 import java.util.HashMap;
 
+/**
+ * The type Game manager.
+ */
 public class GameManager {
 
     private Game game;
@@ -13,6 +16,13 @@ public class GameManager {
     private ChatHistory chatHistory;
     private HashMap<String,Integer> votes;
     private boolean gameStarted = false;
+
+    /**
+     * Instantiates a new Game manager.
+     *
+     * @param server the server
+     * @param game   the game
+     */
     public GameManager(Server server,Game game){
         this.game = game;
         this.server = server;
@@ -54,18 +64,38 @@ public class GameManager {
             dl.receiveMassage("Your TeamMates is " + gf.getUserName() + " and " + sm.getUserName());
         }
     }
+
+    /**
+     * Intro night.
+     */
     public void introNight(){
         server.sendMassageToPlayers("Intro Night Started");
         sendMassageMafias();
         sendMassageToMayor();
         server.sendMassageToPlayers("Intro Night Ended");
     }
+
+    /**
+     * Add massage to history.
+     *
+     * @param massage the massage
+     */
     public synchronized void addMassageToHistory(String massage){
         chatHistory.addMassage(massage);
     }
+
+    /**
+     * Get chat history string.
+     *
+     * @return the string
+     */
     public String getChatHistory(){
         return chatHistory.get();
     }
+
+    /**
+     * Discussion.
+     */
     public void discussion(){
         server.sendDayList();
         server.sendMassageToPlayers("It's time to discussion");
@@ -245,6 +275,10 @@ public class GameManager {
         }
         return "NoOne";
     }
+
+    /**
+     * Night.
+     */
     public void night(){
         if (!gameStarted){
             introNight();
@@ -300,6 +334,10 @@ public class GameManager {
     private void kill(String userName){
         game.kill(userName);
     }
+
+    /**
+     * Start voting.
+     */
     public void startVoting(){
         server.startVoting();
     }
@@ -307,6 +345,12 @@ public class GameManager {
         game.execute(userName);
         server.playerDeadMenu(userName);
     }
+
+    /**
+     * Set vote.
+     *
+     * @param userName the user name
+     */
     public void setVote(String userName){
         Integer count = votes.get(userName);
         count += 1;
@@ -315,6 +359,12 @@ public class GameManager {
     private Integer maxVote(){
         return Collections.max(votes.values());
     }
+
+    /**
+     * Check the votes are regular boolean.
+     *
+     * @return the boolean
+     */
     public boolean checkTheVotesAreRegular(){
         int playersWithMaxVote = 0;
         for (int i = 0 ; i < server.getCapacity() ; i++){
@@ -339,6 +389,12 @@ public class GameManager {
         game.silent(userName);
         server.sendMassageToPlayers(userName + " is silenced by psychologist");
     }
+
+    /**
+     * Check votes.
+     *
+     * @param votesList the votes list
+     */
     public void checkVotes(String votesList) {
         server.sendMassageToPlayers("We Are Waiting for Mayor Agreement...");
         PlayerOnServer mayor = game.getPlayerThread("Mayor");
@@ -380,6 +436,9 @@ public class GameManager {
     }
 
 
+    /**
+     * Start game.
+     */
     public void startGame() {
         if (game.mafiaWins() || game.citizensWins()){
             scoreBoard();

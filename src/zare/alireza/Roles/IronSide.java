@@ -2,8 +2,14 @@ package zare.alireza.Roles;
 
 import java.util.Scanner;
 
+/**
+ * The type Iron side.
+ */
 public class IronSide extends Citizen{
 
+    /**
+     * Instantiates a new Iron side.
+     */
     public IronSide() {
         super();
         information = "you can ask god to tell everyone which roles are out of the game, don't tell anyone, if mafia shot you once it's not affect";

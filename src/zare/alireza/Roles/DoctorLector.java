@@ -2,8 +2,14 @@ package zare.alireza.Roles;
 
 import java.util.Scanner;
 
+/**
+ * The type Doctor lector.
+ */
 public class DoctorLector extends Mafia{
 
+    /**
+     * Instantiates a new Doctor lector.
+     */
     public DoctorLector(){
         super();
         information =

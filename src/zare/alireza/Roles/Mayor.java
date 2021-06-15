@@ -2,8 +2,15 @@ package zare.alireza.Roles;
 
 import java.util.Scanner;
 
+/**
+ * The type Mayor.
+ */
 public class Mayor extends Citizen{
     private boolean canCancelVoting = true;
+
+    /**
+     * Instantiates a new Mayor.
+     */
     public Mayor(){
         super();
         information = "Mayor Can Cancel the election of day";

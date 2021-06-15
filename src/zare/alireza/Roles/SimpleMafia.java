@@ -2,8 +2,14 @@ package zare.alireza.Roles;
 
 import java.util.Scanner;
 
+/**
+ * The type Simple mafia.
+ */
 public class SimpleMafia extends Mafia{
 
+    /**
+     * Instantiates a new Simple mafia.
+     */
     public SimpleMafia(){
         super();
         information =
