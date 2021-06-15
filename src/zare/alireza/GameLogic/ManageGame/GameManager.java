@@ -30,6 +30,13 @@ public class GameManager {
         initVotesHashMap();
     }
 
+    private void sleep(){
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
     private void initVotesHashMap(){
         votes = new HashMap<>();
         for (int i = 0 ; i < server.getCapacity() ; i++){
@@ -139,6 +146,7 @@ public class GameManager {
         }
         server.sendMassageToPlayers(NightMassages.doctorLectorWakeUp);
         if (!doctorLector.alive()){
+            sleep();
             server.sendMassageToPlayers(NightMassages.doctorLectorSleep);
             return "NoBody";
         }
@@ -150,6 +158,7 @@ public class GameManager {
         server.sendMassageToPlayers(NightMassages.physicianWakeUp);
         PlayerOnServer physician = game.getPlayerThread("Physician");
         if (!physician.alive()) {
+            sleep();
             server.sendMassageToPlayers(NightMassages.physicianSleep);
             return "NoBody";
         }
@@ -161,6 +170,7 @@ public class GameManager {
         server.sendMassageToPlayers(NightMassages.detectorWakeUp);
         PlayerOnServer detector = game.getPlayerThread("Detector");
         if (!detector.alive()){
+            sleep();
             server.sendMassageToPlayers(NightMassages.detectorSleep);
             return;
         }
@@ -184,6 +194,7 @@ public class GameManager {
         }
         server.sendMassageToPlayers(NightMassages.proWakeUp);
         if (!professional.alive()){
+            sleep();
             server.sendMassageToPlayers(NightMassages.proSleep);
             return "NoBody";
         }
@@ -200,6 +211,7 @@ public class GameManager {
         server.sendMassageToPlayers(NightMassages.psychologistWakeUp);
         PlayerOnServer psychologist = game.getPlayerThread("Psychologist");
         if (!psychologist.alive()) {
+            sleep();
             server.sendMassageToPlayers(NightMassages.psychologistSleep);
             return "NoBody";
         }
@@ -214,6 +226,7 @@ public class GameManager {
         }
         server.sendMassageToPlayers(NightMassages.ironSideWakeUp);
         if (!ironSide.alive()){
+            sleep();
             server.sendMassageToPlayers(NightMassages.ironSideSleep);
             return "No";
         }
@@ -231,6 +244,7 @@ public class GameManager {
     private String mafiaTarget(){
 
         server.sendMassageToPlayers(NightMassages.mafiaWakeUp);
+        sleep();
         server.sendMassageToPlayers(NightMassages.godFatherTarget);
         PlayerOnServer sm = game.getPlayerThread("SimpleMafia");
         PlayerOnServer dl = game.getPlayerThread("DoctorLector");
@@ -286,17 +300,27 @@ public class GameManager {
             return;
         }
         server.sendMassageToPlayers(NightMassages.eveyOneSleep);
+        sleep();
         String mafiaAction = mafiaTarget();
         server.sendMassageToPlayers(NightMassages.mafiaSleep);
+        sleep();
         String doctorLectorAction = doctorLectorAction();
+        sleep();
         String physicianAction = physicianAction();
+        sleep();
         detectorAction();
+        sleep();
         String psychoAction = psychologistAction();
+        sleep();
         String professionalAction = professionalAction();
+        sleep();
         String ironSideAction = ironSideAction();
+        sleep();
         server.sendMassageToPlayers(NightMassages.everyOneWakeUp);
+        sleep();
         handleNightEvents(mafiaAction,doctorLectorAction,physicianAction,professionalAction);
         makeSilent(psychoAction);
+        sleep();
         ironSideActionHandle(ironSideAction);
     }
     private void killsOrSavesHandle(String[] actions){

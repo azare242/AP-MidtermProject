@@ -47,6 +47,7 @@ public  class PlayerOnServer extends Thread{
      * Leave game.
      */
     public void leaveGame(){
+        server.aPlayerKilled();
         try {
 
             isAlive = false;
