@@ -271,7 +271,8 @@ public class GameManager {
         else if (dl != null && sm == null){
             String doctorLectorOpinion = getDoctorLectorOpinion();
             if (gf.alive()){
-                gf.receiveMassage(dl.getUserName() + " says we have to kill " + doctorLectorOpinion);
+                if (!doctorLectorOpinion.equals("NoBody"))
+                    gf.receiveMassage(dl.getUserName() + " says we have to kill " + doctorLectorOpinion);
                 return godFatherAction();
             }
             else {
@@ -282,7 +283,14 @@ public class GameManager {
             String simpleMafiaOpinion = getSimpleMafiaOpinion();
             String doctorLectorOpinion = getDoctorLectorOpinion();
             if (gf.alive()){
-                gf.receiveMassage(sm.getUserName() + " says we have to kill " + simpleMafiaOpinion + " and " + dl.getUserName() + " says we have to kill " + doctorLectorOpinion);
+                String massage = "";
+                if (!simpleMafiaOpinion.equals("NoBody")){
+                    massage += sm.getUserName() + " says we have to kill " + simpleMafiaOpinion;
+                }
+                if (!doctorLectorOpinion.equals("NoBody")){
+                    massage = "\n" + dl.getUserName() + " says we have to kill " + doctorLectorOpinion;
+                }
+                gf.receiveMassage(massage);
                 return godFatherAction();
             }
             else {
