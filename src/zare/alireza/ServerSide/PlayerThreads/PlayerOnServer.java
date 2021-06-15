@@ -79,6 +79,7 @@ public  class PlayerOnServer extends Thread{
      * Dead menu.
      */
     public void deadMenu(){
+        server.aPlayerKilled();
         try {
             sender.writeUTF("you_dead");
             String answer = receiver.readUTF();

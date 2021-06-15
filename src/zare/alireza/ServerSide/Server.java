@@ -20,6 +20,7 @@ public class Server {
     private ArrayList<PlayerOnServer> threads;
     private int playersReady = 0;
     private int votedPlayers = 0;
+    private int alivePlayers;
     private int capacity;
     private GameManager gameManager;
     private String votes = "";
@@ -32,6 +33,7 @@ public class Server {
      */
     public Server(int port,int capacity){
         this.capacity = capacity;
+        this.alivePlayers = capacity;
         try {
             serverSocket = new ServerSocket(port);
         } catch (IOException e) {
@@ -246,9 +248,15 @@ public class Server {
      * @return the boolean
      */
     public boolean allPlayersVoted(){
-        return votedPlayers == capacity;
+        return votedPlayers == alivePlayers;
     }
 
+    /**
+     * A player killed.
+     */
+    public synchronized void aPlayerKilled(){
+        alivePlayers--;
+    }
     /**
      * Check votes.
      */

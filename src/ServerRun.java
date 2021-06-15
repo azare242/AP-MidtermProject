@@ -33,6 +33,7 @@ public class ServerRun {
                     while (true) {
                         String port = scanner.next();
                         if (portIsValid(port)) {
+                            System.out.println("a game starter at port " + port + " HAVE FUN");
                             new Server(Integer.parseInt(port),playersCount).serverStart();
                             return;
                         } else System.out.println("Invalid port");

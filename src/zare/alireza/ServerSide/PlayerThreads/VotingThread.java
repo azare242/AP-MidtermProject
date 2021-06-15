@@ -41,6 +41,7 @@ public class VotingThread extends Thread{
 
             String chose = receiver.readUTF();
             if (chose.equalsIgnoreCase("exit")){
+                server.aPlayerKilled();
                 server.setVote("NoOne",thisPlayer.getUserName());
                 if (server.allPlayersVoted()) server.checkVotes();
                 thisPlayer.leaveGame();;
